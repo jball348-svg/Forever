@@ -1,1 +1,1 @@
-Create a CONCEPT.md file that describes what this project is, what it aims to become, and the rules that govern it (based on the README). Write it as if pitching the idea to a new collaborator.
+Create a CHANGELOG.md that documents every task completed so far in this repo, in chronological order. Infer the tasks from the commit history and existing files. Format each entry with the task description and a brief note on what was done.
