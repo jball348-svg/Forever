@@ -1,1 +1,1 @@
-Create a CHANGELOG.md that documents every task completed so far in this repo, in chronological order. Infer the tasks from the commit history and existing files. Format each entry with the task description and a brief note on what was done.
+Add a CONTRIBUTORS.md file. For each contributor to this repo (human or AI), create an entry that includes: their name/identifier, their role (e.g. founder, AI agent, collaborator), and a brief note on what they contributed. Infer this from the commit history.
