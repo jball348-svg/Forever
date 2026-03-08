@@ -80,6 +80,7 @@ ${colour('yellow', 'Commands:')}
   ${colour('green', 'validate')}               Validate a JSON file against a schema
   ${colour('green', 'plugin')}                 Manage and inspect plugins
   ${colour('green', 'health')}      [--format]  Run health checks and show status
+  ${colour('green', 'metrics')}     [--format]  Display current metrics
 
 ${colour('yellow', 'Global options:')}
   --help      Show help for any command
@@ -169,6 +170,14 @@ ${colour('yellow', 'Usage:')} forever health [--format text|json]
 Run health checks and display a formatted report.
 
   --format   Output format: 'text' (default) or 'json'
+`;
+
+const HELP_METRICS = `
+${colour('yellow', 'Usage:')} forever metrics [--format table|json]
+
+Display current metrics in a formatted table or JSON.
+
+  --format   Output format: 'table' (default) or 'json'
 `;
 
 // ─── Commands ──────────────────────────────────────────────────────────────────
@@ -471,6 +480,116 @@ async function cmdHealth(flags) {
   }
 }
 
+async function cmdMetrics(flags) {
+  if (flags.help) exit(0, HELP_METRICS);
+
+  const format = flags.format || 'table';
+  if (!['table', 'json'].includes(format)) fail(`--format must be 'table' or 'json'.`);
+
+  printHeader('Metrics Report');
+  
+  try {
+    const { metrics } = require('../src/index.js');
+    
+    if (format === 'json') {
+      const jsonExport = metrics.exportJSON();
+      process.stdout.write(JSON.stringify(jsonExport, null, 2) + '\n');
+    } else {
+      const jsonExport = metrics.exportJSON();
+      
+      if (Object.keys(jsonExport).length === 0) {
+        process.stdout.write(`${colour('dim', 'No metrics collected yet.')}\n`);
+        return;
+      }
+      
+      // Group metrics by type
+      const counters = [];
+      const gauges = [];
+      const histograms = [];
+      
+      for (const [name, metric] of Object.entries(jsonExport)) {
+        switch (metric.type) {
+          case 'counter':
+            counters.push({ name, ...metric });
+            break;
+          case 'gauge':
+            gauges.push({ name, ...metric });
+            break;
+          case 'histogram':
+            histograms.push({ name, ...metric });
+            break;
+        }
+      }
+      
+      // Display counters
+      if (counters.length > 0) {
+        process.stdout.write(`${colour('bold', 'Counters:')}\n`);
+        for (const counter of counters) {
+          process.stdout.write(`  ${colour('cyan', counter.name)}\n`);
+          if (counter.help) {
+            process.stdout.write(`    ${colour('dim', counter.help)}\n`);
+          }
+          for (const [labels, value] of Object.entries(counter.values)) {
+            const labelStr = labels === '{}' ? '' : ` ${labels}`;
+            process.stdout.write(`    ${labelStr}: ${colour('green', value)}\n`);
+          }
+          process.stdout.write('\n');
+        }
+      }
+      
+      // Display gauges
+      if (gauges.length > 0) {
+        process.stdout.write(`${colour('bold', 'Gauges:')}\n`);
+        for (const gauge of gauges) {
+          process.stdout.write(`  ${colour('cyan', gauge.name)}\n`);
+          if (gauge.help) {
+            process.stdout.write(`    ${colour('dim', gauge.help)}\n`);
+          }
+          for (const [labels, value] of Object.entries(gauge.values)) {
+            const labelStr = labels === '{}' ? '' : ` ${labels}`;
+            process.stdout.write(`    ${labelStr}: ${colour('yellow', value)}\n`);
+          }
+          process.stdout.write('\n');
+        }
+      }
+      
+      // Display histograms
+      if (histograms.length > 0) {
+        process.stdout.write(`${colour('bold', 'Histograms:')}\n`);
+        for (const histogram of histograms) {
+          process.stdout.write(`  ${colour('cyan', histogram.name)}\n`);
+          if (histogram.help) {
+            process.stdout.write(`    ${colour('dim', histogram.help)}\n`);
+          }
+          for (const [labels, data] of Object.entries(histogram.values)) {
+            const labelStr = labels === '{}' ? '' : ` ${labels}`;
+            process.stdout.write(`    ${labelStr}:\n`);
+            process.stdout.write(`      Count: ${colour('green', data.count)}\n`);
+            process.stdout.write(`      Sum: ${colour('yellow', data.sum.toFixed(3))}\n`);
+            process.stdout.write(`      Buckets:\n`);
+            for (const bucket of data.buckets) {
+              const bucketStr = `        ≤${bucket.le}s: ${bucket.count}`;
+              process.stdout.write(`      ${bucketStr}\n`);
+            }
+            process.stdout.write('\n');
+          }
+        }
+      }
+      
+      // Show built-in metrics status
+      const builtInCount = Object.keys(jsonExport).filter(name => 
+        name.startsWith('nodejs_') || name.startsWith('forever_')
+      ).length;
+      
+      if (builtInCount > 0) {
+        process.stdout.write(`${colour('dim', `Built-in metrics: ${builtInCount} active`)}\n`);
+      }
+    }
+  } catch (error) {
+    fail(`Metrics display failed: ${error.message}`);
+  }
+}
+
 // ─── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -495,6 +614,7 @@ async function main() {
     case 'validate':  await cmdValidate(flags); break;
     case 'plugin':    cmdPlugin(positional.slice(1), flags); break;
     case 'health':    await cmdHealth(flags); break;
+    case 'metrics':   await cmdMetrics(flags); break;
     default:
       fail(`Unknown command: "${command}". Run 'forever --help' for usage.`);
   }

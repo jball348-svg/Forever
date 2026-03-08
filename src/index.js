@@ -61,6 +61,9 @@ const { PluginManager, withPlugins, loggingPlugin, timingPlugin } = require('./p
 const health = require('./health');
 const { configure, start, stop, getStatus } = require('./healthServer');
 
+// Metrics and monitoring
+const metrics = require('./metrics');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -122,4 +125,7 @@ module.exports = {
   // Health monitoring
   health,
   healthServer: { configure, start, stop, getStatus },
+
+  // Metrics and monitoring
+  metrics,
 };

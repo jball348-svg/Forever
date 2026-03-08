@@ -5,6 +5,7 @@
 
 const v8 = require('v8');
 const config = require('./config');
+const metrics = require('./metrics');
 
 // Registered health checks
 const checks = new Map();
@@ -115,7 +116,8 @@ async function toJSON() {
         totalHeapSizeExecutable: heapStats.total_heap_size_executable,
         totalPhysicalSize: heapStats.total_physical_size
       }
-    }
+    },
+    metrics: metrics.exportJSON()
   };
 }
 
