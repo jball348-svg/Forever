@@ -1,0 +1,39 @@
+{
+  "env": {
+    "node": true,
+    "es2020": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "commonjs"
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "args": "after-used", "ignoreRestSiblings": true }],
+    "no-console": ["warn", { "allow": ["warn", "error", "log"] }],
+    "consistent-return": "warn",
+    "eqeqeq": ["error", "always"],
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-undef": "error",
+    "no-shadow": "warn",
+    "no-use-before-define": ["error", { "functions": false, "classes": true }],
+    "curly": ["error", "all"],
+    "no-throw-literal": "error",
+    "no-return-await": "warn",
+    "prefer-arrow-callback": "warn",
+    "object-shorthand": ["warn", "always"],
+    "no-duplicate-imports": "error",
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+    "no-unreachable": "error",
+    "no-constant-condition": "warn",
+    "handle-callback-err": "error",
+    "node/no-missing-require": "off"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "benchmarks/reports/",
+    "types/"
+  ]
+}

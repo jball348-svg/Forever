@@ -1,5 +1,7 @@
 # Forever — Concept Document
 
+[![CI](https://github.com/jball348-svg/Forever/actions/workflows/ci.yml/badge.svg)](https://github.com/jball348-svg/Forever/actions/workflows/ci.yml)
+
 ## What is this?
 
 **Forever** is a self-improving repository with a simple but compelling premise: it evolves one task at a time, forever.
