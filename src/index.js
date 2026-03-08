@@ -64,6 +64,9 @@ const { configure, start, stop, getStatus } = require('./healthServer');
 // Metrics and monitoring
 const metrics = require('./metrics');
 
+// Rate limiting
+const { createRateLimiter, createTokenBucket, createSlidingWindow, createFixedWindow } = require('./ratelimiter');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -128,4 +131,7 @@ module.exports = {
 
   // Metrics and monitoring
   metrics,
+
+  // Rate limiting
+  rateLimiter: { createRateLimiter, createTokenBucket, createSlidingWindow, createFixedWindow },
 };
