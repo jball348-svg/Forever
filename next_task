@@ -1,27 +1,33 @@
-Add an in-memory key-value store with TTL (Time-To-Live) support and LRU (Least Recently Used) eviction. Create `src/kvstore.js` with the following:
+Add a structured logging module with log levels, context enrichment, and multiple output formatters. Create `src/structuredLogger.js` with the following:
 
-1) `createKVStore(options)` - factory function. Options:
-   - `maxSize` (number, default Infinity) - max number of entries before LRU eviction
-   - `defaultTTL` (number ms, default 0 = no expiry) - default TTL for all entries
-   - `onEvict(key, value)` - optional callback when an entry is evicted (LRU or TTL)
+1) `createLogger(options)` - factory function. Options:
+   - `level` ('debug'|'info'|'warn'|'error'|'silent', default 'info') - minimum log level to output
+   - `formatter` ('json'|'pretty'|'ndjson', default 'pretty') - output format
+   - `output` (writable stream, default process.stderr) - where to write log lines
+   - `context` (object, default {}) - fields merged into every log entry
+   - `name` (string) - logger name, included in every entry
 
-2) Returns an object with:
-   - `set(key, value, ttl?)` - store a value; ttl (ms) overrides defaultTTL for this entry
-   - `get(key)` - retrieve a value, returns undefined if missing or expired; accessing a key makes it most-recently-used
-   - `has(key)` - returns true if key exists and is not expired
-   - `delete(key)` - remove a key; returns true if it existed
-   - `clear()` - remove all entries
-   - `size()` - returns number of non-expired entries
-   - `keys()` - returns array of non-expired keys
-   - `values()` - returns array of non-expired values
-   - `entries()` - returns array of [key, value] pairs for non-expired entries
-   - `ttl(key)` - returns milliseconds until expiry (or Infinity if no TTL), undefined if missing
-   - `getStats()` - returns `{ hits, misses, evictions, size }`
+2) The returned logger exposes:
+   - `debug(msg, fields?)`, `info(msg, fields?)`, `warn(msg, fields?)`, `error(msg, fields?)` - log at the given level; `fields` is an optional object of extra metadata
+   - `child(context)` - returns a new logger inheriting parent options, with extra context merged in
+   - `setLevel(level)` - change the minimum log level at runtime
+   - `getLevel()` - returns the current level string
+   - `isLevelEnabled(level)` - returns true if the level would be logged
 
-3) LRU eviction: when maxSize is exceeded, evict the least recently used entry.
+3) Log entry schema (all formatters must include these fields):
+   - `timestamp` (ISO 8601)
+   - `level` (string)
+   - `name` (string, if set)
+   - `msg` (string)
+   - Plus any merged context and per-call fields
 
-4) TTL enforcement: expired entries are lazily removed on access and eagerly via a periodic sweep every 30 seconds.
+4) Formatters:
+   - `json`: single-line JSON
+   - `ndjson`: newline-delimited JSON (same as json but makes the contract explicit)
+   - `pretty`: human-readable coloured output: `[TIMESTAMP] LEVEL name: msg {fields}`
 
-5) Write tests in `tests/kvstore.test.js` covering: basic get/set, TTL expiry, LRU eviction, has/delete/clear, size/keys/values/entries, stats tracking, and onEvict callback.
+5) Log levels hierarchy (lowest to highest): debug < info < warn < error < silent. Entries below the current level are discarded.
 
-6) Export `createKVStore` from `src/index.js`.
+6) Write tests in `tests/structuredLogger.test.js` covering: level filtering, child logger context merging, setLevel/getLevel, isLevelEnabled, json formatter output, pretty formatter output, and error logging with Error objects.
+
+7) Export `createLogger` from `src/index.js` as `structuredLogger`.

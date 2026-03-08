@@ -70,6 +70,9 @@ const { createRateLimiter, createTokenBucket, createSlidingWindow, createFixedWi
 // Circuit breaker
 const { createCircuitBreaker, CircuitOpenError } = require('./circuitbreaker');
 
+// KV Store
+const { createKVStore } = require('./kvstore');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -140,4 +143,7 @@ module.exports = {
 
   // Circuit breaker
   circuitBreaker: { createCircuitBreaker, CircuitOpenError },
+
+  // KV Store with TTL and LRU eviction
+  kvstore: { createKVStore },
 };
