@@ -117,7 +117,7 @@ function getModuleSummary(moduleName) {
   if (!m) return '';
   // Strip * prefixes and collect non-tag lines
   const lines = m[0].split('\n')
-    .map(l => l.replace(/^\s*\/?\*+\/?\s?/, '').trim())
+    .map(l => l.replace(/^\s*\/?\/?\*+\/?\s?/, '').trim())
     .filter(l => l && !l.startsWith('@') && !l.startsWith('@file'));
   return lines.find(l => !l.startsWith('@file') && !l.startsWith('@description') && l.length > 0)
     || lines[0] || '';
@@ -227,9 +227,48 @@ function runAllTests() {
   return { results, total: testFiles.length, passed: totalPassed, failed: totalFailed };
 }
 
+// ---------------------------------------------------------------------------
+// Rate limiter demo
+// ---------------------------------------------------------------------------
+
+/**
+ * Run a demonstration of the rate limiter (sliding window, 5 req / 10s, 7 attempts).
+ * Prints a formatted table of results to stdout.
+ */
+function ratelimitDemo() {
+  const { createSlidingWindow } = require('./ratelimiter');
+  const limiter = createSlidingWindow({ limit: 5, windowMs: 10000 });
+  const key = 'demo-user';
+  const totalRequests = 7;
+
+  printHeader('Rate Limiter Demo  (sliding window: 5 req / 10s)');
+
+  const colW = [6, 10, 12, 26];
+  const row = (cells) =>
+    '│ ' + cells.map((c, i) => String(c).padEnd(colW[i])).join(' │ ') + ' │';
+  const sep = '├' + colW.map(w => '─'.repeat(w + 2)).join('┼') + '┤';
+  const top = '┌' + colW.map(w => '─'.repeat(w + 2)).join('┬') + '┐';
+  const bot = '└' + colW.map(w => '─'.repeat(w + 2)).join('┴') + '┘';
+
+  process.stdout.write(top + '\n');
+  process.stdout.write(row(['Req #', 'Status', 'Remaining', 'Reset At']) + '\n');
+  process.stdout.write(sep + '\n');
+
+  for (let i = 1; i <= totalRequests; i++) {
+    const result = limiter.hit(key);
+    const status = result.allowed
+      ? colour('green', 'ALLOWED')
+      : colour('red',   'DENIED ');
+    const resetStr = result.resetAt.toLocaleTimeString();
+    process.stdout.write(row([i, status, result.remaining, resetStr]) + '\n');
+  }
+
+  process.stdout.write(bot + '\n\n');
+}
+
 module.exports = {
   colour, printHeader, ok, fail, warn, ansi,
   listModules, getModuleSummary, getExports, getModuleAPI,
-  runAllTests,
+  runAllTests, ratelimitDemo,
   SRC_DIR, TESTS_DIR
 };
