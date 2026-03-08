@@ -69,6 +69,30 @@ $ forever info cache
     Check whether a key exists and has not expired.
 ```
 
+#### `forever info config`
+Explore the configuration management API:
+
+```bash
+$ forever info config
+  get(key: string, defaultValue: *) → *
+    Retrieve a configuration value using dot-notation.
+
+  set(key: string, value: *)
+    Set a configuration value at runtime.
+
+  validate(schema: object) → string[]
+    Validate the current config against a schema.
+
+  watch(key: string, callback: Function) → Function
+    Register a watcher for a dot-notation key.
+
+  reset()
+    Reset configuration to factory defaults.
+
+  toJSON() → object
+    Return a sanitized config snapshot with sensitive keys masked.
+```
+
 #### `forever run <module>`
 Dynamically load and display a module's exports. If the module exports a single function, it is called as a demo.
 
@@ -137,10 +161,68 @@ $ forever plugin list
 | Variable | Description |
 |----------|-------------|
 | `NO_COLOR` | Set to any value to disable ANSI colour output |
+| `FOREVER_LOG_LEVEL` | Override the log level (e.g. `debug`) |
+| `FOREVER_CACHE_MAXSIZE` | Override the cache max size |
+| `FOREVER_ENV` | Override the environment name |
 
 ---
 
-## 6. Future Roadmap
+## 6. Configuration System
+
+The `config` module (`src/config.js`) provides a full-featured configuration manager.
+
+### Priority Order
+Values are resolved in this order (highest priority first):
+1. **Runtime overrides** — set via `config.set(key, value)`
+2. **Environment variables** — `FOREVER_*` vars (e.g. `FOREVER_LOG_LEVEL=debug`)
+3. **`.foreverrc.json`** — a JSON file in the working directory
+4. **Built-in defaults**
+
+### Usage
+
+```js
+const config = require('./src/config');
+
+// Read a nested value
+config.get('log.level');           // 'info'
+config.get('cache.defaultTtlMs'); // 60000
+config.get('missing', 'fallback'); // 'fallback'
+
+// Override at runtime
+config.set('log.level', 'debug');
+
+// Watch for changes
+const unsub = config.watch('log.level', (newVal, oldVal) => {
+  console.log(`log.level: ${oldVal} → ${newVal}`);
+});
+unsub(); // stop watching
+
+// Validate configuration
+const errors = config.validate({
+  'log.level':    { type: 'string', required: true, enum: ['info', 'debug', 'warn', 'error'] },
+  'cache.maxSize': { type: 'number', min: 1, max: 10000 },
+});
+if (errors.length) console.error(errors);
+
+// Sanitized snapshot (passwords/secrets/tokens masked)
+console.log(config.toJSON());
+
+// Reset to defaults
+config.reset();
+```
+
+### `.foreverrc.json` Example
+
+```json
+{
+  "log": { "level": "warn", "format": "json" },
+  "cache": { "maxSize": 500 }
+}
+```
+
+---
+
+## 7. Future Roadmap
 - **Q2 2026**: Add more visualization options
 - **Q3 2026**: Enhance performance and reduce loading times
 - **2027**: Expand the project scope to mobile applications.
