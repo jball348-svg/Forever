@@ -1,18 +1,20 @@
-Add a typed event emitter module with strong typing support, wildcard subscriptions, and once/off helpers. Create `src/typedEmitter.js` with the following:
+Add a task runner / workflow orchestrator module. Create `src/taskRunner.js` with the following:
 
-1) `createTypedEmitter()` - factory function. Returns an emitter object with:
-   - `on(event, handler)` - subscribe to an event; returns an unsubscribe function
-   - `once(event, handler)` - subscribe for exactly one invocation; auto-unsubscribes after firing; returns an unsubscribe function
-   - `off(event, handler)` - remove a specific handler
-   - `emit(event, ...args)` - fire all handlers for `event`, then all wildcard ('*') handlers, passing `(event, ...args)` to wildcards
-   - `on('*', handler)` - wildcard subscription: fires for every event; handler receives `(event, ...args)`
-   - `listeners(event)` - returns a copy of the handlers array for the given event
-   - `listenerCount(event)` - returns number of handlers for the event
-   - `removeAllListeners(event?)` - removes all handlers for a specific event, or all events if no event given
-   - `eventNames()` - returns array of event names that have at least one listener
+1) `createTaskRunner(options?)` - factory. Options:
+   - `concurrency` (number, default Infinity) - max tasks running simultaneously
+   - `timeout` (number ms, default 0 = no timeout) - per-task execution timeout
+   - `onTaskStart(name)` - optional hook called when a task starts
+   - `onTaskEnd(name, result)` - optional hook called when a task finishes successfully
+   - `onTaskError(name, error)` - optional hook called when a task fails
 
-2) `createAsyncTypedEmitter()` - same interface but `emit` is async and awaits each handler in series; returns a Promise that resolves when all handlers have settled.
+2) The returned runner exposes:
+   - `task(name, dependencies, fn)` - register a named async task. `dependencies` is an array of task names that must complete before this task runs. `fn` receives the results of its dependencies as named properties: `fn({ depName: result, ... })`.
+   - `run(name?)` - run a specific task (and its dependencies) OR run all registered tasks if no name given. Returns a Promise that resolves to a map of `{ taskName: result }` for all tasks run.
+   - `getStatus()` - returns an object mapping task names to 'pending' | 'running' | 'done' | 'failed'
+   - `reset()` - reset all task statuses back to pending (allowing re-runs)
 
-3) Write tests in `tests/typedEmitter.test.js` covering: basic emit/on, once fires exactly once, off removes handler, wildcard receives all events, removeAllListeners, eventNames, listenerCount, async emitter awaits handlers, and error propagation.
+3) Handle: circular dependency detection (throw at registration time), concurrent execution up to `concurrency` limit, per-task timeout (reject with a timeout error if exceeded), and proper dependency result passing.
 
-4) Export `createTypedEmitter` and `createAsyncTypedEmitter` from `src/index.js` as `typedEmitter`.
+4) Write tests in `tests/taskRunner.test.js` covering: sequential tasks, parallel independent tasks, dependency result passing, concurrency limit, circular dependency detection, timeout, onTaskStart/End/Error hooks, reset and re-run.
+
+5) Export `createTaskRunner` from `src/index.js`.

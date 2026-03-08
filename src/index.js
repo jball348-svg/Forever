@@ -76,6 +76,9 @@ const { createKVStore } = require('./kvstore');
 // Structured logger
 const { createLogger } = require('./structuredLogger');
 
+// Typed emitter
+const { createTypedEmitter, createAsyncTypedEmitter } = require('./typedEmitter');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -152,4 +155,7 @@ module.exports = {
 
   // Structured logger
   structuredLogger: { createLogger },
+
+  // Typed event emitter
+  typedEmitter: { createTypedEmitter, createAsyncTypedEmitter },
 };
