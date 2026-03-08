@@ -73,6 +73,9 @@ const { createCircuitBreaker, CircuitOpenError } = require('./circuitbreaker');
 // KV Store
 const { createKVStore } = require('./kvstore');
 
+// Structured logger
+const { createLogger } = require('./structuredLogger');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -146,4 +149,7 @@ module.exports = {
 
   // KV Store with TTL and LRU eviction
   kvstore: { createKVStore },
+
+  // Structured logger
+  structuredLogger: { createLogger },
 };

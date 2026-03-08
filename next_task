@@ -1,33 +1,18 @@
-Add a structured logging module with log levels, context enrichment, and multiple output formatters. Create `src/structuredLogger.js` with the following:
+Add a typed event emitter module with strong typing support, wildcard subscriptions, and once/off helpers. Create `src/typedEmitter.js` with the following:
 
-1) `createLogger(options)` - factory function. Options:
-   - `level` ('debug'|'info'|'warn'|'error'|'silent', default 'info') - minimum log level to output
-   - `formatter` ('json'|'pretty'|'ndjson', default 'pretty') - output format
-   - `output` (writable stream, default process.stderr) - where to write log lines
-   - `context` (object, default {}) - fields merged into every log entry
-   - `name` (string) - logger name, included in every entry
+1) `createTypedEmitter()` - factory function. Returns an emitter object with:
+   - `on(event, handler)` - subscribe to an event; returns an unsubscribe function
+   - `once(event, handler)` - subscribe for exactly one invocation; auto-unsubscribes after firing; returns an unsubscribe function
+   - `off(event, handler)` - remove a specific handler
+   - `emit(event, ...args)` - fire all handlers for `event`, then all wildcard ('*') handlers, passing `(event, ...args)` to wildcards
+   - `on('*', handler)` - wildcard subscription: fires for every event; handler receives `(event, ...args)`
+   - `listeners(event)` - returns a copy of the handlers array for the given event
+   - `listenerCount(event)` - returns number of handlers for the event
+   - `removeAllListeners(event?)` - removes all handlers for a specific event, or all events if no event given
+   - `eventNames()` - returns array of event names that have at least one listener
 
-2) The returned logger exposes:
-   - `debug(msg, fields?)`, `info(msg, fields?)`, `warn(msg, fields?)`, `error(msg, fields?)` - log at the given level; `fields` is an optional object of extra metadata
-   - `child(context)` - returns a new logger inheriting parent options, with extra context merged in
-   - `setLevel(level)` - change the minimum log level at runtime
-   - `getLevel()` - returns the current level string
-   - `isLevelEnabled(level)` - returns true if the level would be logged
+2) `createAsyncTypedEmitter()` - same interface but `emit` is async and awaits each handler in series; returns a Promise that resolves when all handlers have settled.
 
-3) Log entry schema (all formatters must include these fields):
-   - `timestamp` (ISO 8601)
-   - `level` (string)
-   - `name` (string, if set)
-   - `msg` (string)
-   - Plus any merged context and per-call fields
+3) Write tests in `tests/typedEmitter.test.js` covering: basic emit/on, once fires exactly once, off removes handler, wildcard receives all events, removeAllListeners, eventNames, listenerCount, async emitter awaits handlers, and error propagation.
 
-4) Formatters:
-   - `json`: single-line JSON
-   - `ndjson`: newline-delimited JSON (same as json but makes the contract explicit)
-   - `pretty`: human-readable coloured output: `[TIMESTAMP] LEVEL name: msg {fields}`
-
-5) Log levels hierarchy (lowest to highest): debug < info < warn < error < silent. Entries below the current level are discarded.
-
-6) Write tests in `tests/structuredLogger.test.js` covering: level filtering, child logger context merging, setLevel/getLevel, isLevelEnabled, json formatter output, pretty formatter output, and error logging with Error objects.
-
-7) Export `createLogger` from `src/index.js` as `structuredLogger`.
+4) Export `createTypedEmitter` and `createAsyncTypedEmitter` from `src/index.js` as `typedEmitter`.
