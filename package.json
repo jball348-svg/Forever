@@ -10,10 +10,25 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "node tests/greet.test.js && node tests/logger.test.js && node tests/eventBus.test.js && node tests/store.test.js && node tests/utils.test.js && node tests/pipeline.test.js && node tests/scheduler.test.js && node tests/stateManager.test.js && node tests/validator.test.js && node tests/router.test.js && node tests/cache.test.js && node tests/retry.test.js && node tests/queue.test.js && node tests/middleware.test.js && node tests/observable.test.js && node tests/di.test.js && node tests/debounce.test.js && node tests/fsm.test.js && node tests/commandBus.test.js && node tests/memoize.test.js && node tests/stream.test.js && node tests/pool.test.js && node tests/decorators.test.js && node tests/changelog.test.js",
+    "test": "node tests/greet.test.js && node tests/logger.test.js && node tests/eventBus.test.js && node tests/store.test.js && node tests/utils.test.js && node tests/pipeline.test.js && node tests/scheduler.test.js && node tests/stateManager.test.js && node tests/validator.test.js && node tests/router.test.js && node tests/cache.test.js && node tests/retry.test.js && node tests/queue.test.js && node tests/middleware.test.js && node tests/observable.test.js && node tests/di.test.js && node tests/debounce.test.js && node tests/fsm.test.js && node tests/commandBus.test.js && node tests/memoize.test.js && node tests/stream.test.js && node tests/pool.test.js && node tests/decorators.test.js && node tests/changelog.test.js && node tests/coverage.test.js",
     "benchmark": "node benchmarks/index.js",
     "cli": "node bin/forever.js",
     "typecheck": "tsc --noEmit --strict types/example.ts",
-    "changelog": "node scripts/generate-changelog.js"
+    "changelog": "node scripts/generate-changelog.js",
+    "coverage": "node scripts/coverage.js"
+  },
+  "c8": {
+    "lines": 80,
+    "functions": 90,
+    "branches": 70,
+    "statements": 80,
+    "src": "src",
+    "include": ["src/**/*.js"],
+    "exclude": ["**/*.test.js", "coverage/**", "scripts/**"],
+    "reporter": ["html", "json", "text", "lcov"],
+    "reports-dir": "coverage"
+  },
+  "devDependencies": {
+    "c8": "^11.0.0"
   }
 }
