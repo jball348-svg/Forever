@@ -79,6 +79,7 @@ ${colour('yellow', 'Commands:')}
   ${colour('green', 'benchmark')}  [--format]  Run the benchmark suite
   ${colour('green', 'validate')}               Validate a JSON file against a schema
   ${colour('green', 'plugin')}                 Manage and inspect plugins
+  ${colour('green', 'health')}      [--format]  Run health checks and show status
 
 ${colour('yellow', 'Global options:')}
   --help      Show help for any command
@@ -160,6 +161,14 @@ const HELP_PLUGIN = `
 ${colour('yellow', 'Usage:')} forever plugin <sub-command>
 
   list   List all built-in plugins
+`;
+
+const HELP_HEALTH = `
+${colour('yellow', 'Usage:')} forever health [--format text|json]
+
+Run health checks and display a formatted report.
+
+  --format   Output format: 'text' (default) or 'json'
 `;
 
 // ─── Commands ──────────────────────────────────────────────────────────────────
@@ -397,6 +406,71 @@ function cmdPlugin(positional, flags) {
   }
 }
 
+async function cmdHealth(flags) {
+  if (flags.help) exit(0, HELP_HEALTH);
+
+  const format = flags.format || 'text';
+  if (!['text', 'json'].includes(format)) fail(`--format must be 'text' or 'json'.`);
+
+  printHeader('Health Check Report');
+  
+  try {
+    const { health } = require('../src/index.js');
+    
+    if (format === 'json') {
+      const report = await health.toJSON();
+      process.stdout.write(JSON.stringify(report, null, 2) + '\n');
+      
+      // Exit with appropriate code based on status
+      if (report.status === 'failing') {
+        process.exit(1);
+      } else if (report.status === 'degraded') {
+        process.exit(2);
+      }
+    } else {
+      const report = await health.check();
+      const fullReport = await health.toJSON();
+      
+      // Overall status
+      let statusColor;
+      switch (report.status) {
+        case 'ok': statusColor = 'green'; break;
+        case 'degraded': statusColor = 'yellow'; break;
+        case 'failing': statusColor = 'red'; break;
+      }
+      
+      process.stdout.write(`${colour('bold', 'Overall Status:')} ${colour(statusColor, report.status.toUpperCase())}\n`);
+      process.stdout.write(`${colour('dim', 'Summary:')} ${report.summary}\n`);
+      process.stdout.write(`${colour('dim', 'Duration:')} ${report.totalDurationMs}ms\n`);
+      process.stdout.write(`${colour('dim', 'Timestamp:')} ${new Date(report.timestamp).toLocaleString()}\n\n`);
+      
+      // Individual checks
+      process.stdout.write(`${colour('bold', 'Individual Checks:')}\n`);
+      for (const check of report.checks) {
+        const checkStatusColor = check.status === 'ok' ? 'green' : 'red';
+        const statusIcon = check.status === 'ok' ? '✔' : '✖';
+        process.stdout.write(`  ${colour(checkStatusColor, statusIcon)} ${colour('cyan', check.name.padEnd(12))} ${check.message} ${colour('dim', `(${check.durationMs}ms)`)}\n`);
+      }
+      
+      // System info summary
+      process.stdout.write(`\n${colour('bold', 'System Information:')}\n`);
+      process.stdout.write(`  ${colour('dim', 'Node.js:')} ${fullReport.system.nodeVersion} on ${fullReport.system.platform}-${fullReport.system.arch}\n`);
+      process.stdout.write(`  ${colour('dim', 'Uptime:')} ${(fullReport.system.uptime / 3600).toFixed(1)}h\n`);
+      process.stdout.write(`  ${colour('dim', 'Memory:')} ${(fullReport.system.memory.heapUsed / 1024 / 1024).toFixed(1)}MB / ${(fullReport.system.memory.heapTotal / 1024 / 1024).toFixed(1)}MB heap\n`);
+      process.stdout.write(`  ${colour('dim', 'PID:')} ${fullReport.system.pid}\n`);
+      
+      // Exit with appropriate code based on status
+      if (report.status === 'failing') {
+        process.exit(1);
+      } else if (report.status === 'degraded') {
+        process.exit(2);
+      }
+    }
+  } catch (error) {
+    fail(`Health check failed: ${error.message}`);
+  }
+}
+
 // ─── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -420,6 +494,7 @@ async function main() {
     case 'benchmark': await cmdBenchmark(flags); break;
     case 'validate':  await cmdValidate(flags); break;
     case 'plugin':    cmdPlugin(positional.slice(1), flags); break;
+    case 'health':    await cmdHealth(flags); break;
     default:
       fail(`Unknown command: "${command}". Run 'forever --help' for usage.`);
   }
