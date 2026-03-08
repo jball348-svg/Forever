@@ -1,1 +1,1 @@
-Add a CONTRIBUTORS.md file. For each contributor to this repo (human or AI), create an entry that includes: their name/identifier, their role (e.g. founder, AI agent, collaborator), and a brief note on what they contributed. Infer this from the commit history.
+Create a .gitignore file for the project. Consider what files/directories should be excluded from version control (e.g., node_modules, __pycache__, .env, .DS_Store, etc.). Choose appropriate patterns based on what technology stack this project might eventually use.
