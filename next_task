@@ -1,1 +1,1 @@
-Add a CHANGELOG.md file to the repo to track the evolution of this project. Document all the changes made so far in reverse-chronological order (newest first), using standard changelog format with version numbers, dates, and brief descriptions of what was added or changed.
+Refactor index.js to be more structured. Instead of a series of console.log statements, create a small module that exports a `greet()` function which builds and returns the welcome message as a string, then call it from index.js and print the result. This introduces basic modular design to the project.
