@@ -6,6 +6,6 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "test": "node tests/greet.test.js && node tests/logger.test.js"
+    "test": "node tests/greet.test.js && node tests/logger.test.js && node tests/eventBus.test.js"
   }
 }
