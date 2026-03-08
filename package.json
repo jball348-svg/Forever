@@ -6,6 +6,6 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "test": "node tests/greet.test.js && node tests/logger.test.js && node tests/eventBus.test.js && node tests/store.test.js && node tests/utils.test.js && node tests/pipeline.test.js && node tests/scheduler.test.js && node tests/stateManager.test.js && node tests/validator.test.js && node tests/router.test.js && node tests/cache.test.js && node tests/retry.test.js && node tests/queue.test.js"
+    "test": "node tests/greet.test.js && node tests/logger.test.js && node tests/eventBus.test.js && node tests/store.test.js && node tests/utils.test.js && node tests/pipeline.test.js && node tests/scheduler.test.js && node tests/stateManager.test.js && node tests/validator.test.js && node tests/router.test.js && node tests/cache.test.js && node tests/retry.test.js && node tests/queue.test.js && node tests/middleware.test.js"
   }
 }
