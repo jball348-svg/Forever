@@ -51,6 +51,12 @@ const config = require('./config');
 // Welcome/greeting
 const { greet } = require('./greet');
 
+// Performance monitoring
+const performance = require('./performance');
+
+// Plugin system
+const { PluginManager, withPlugins, loggingPlugin, timingPlugin } = require('./plugins');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -102,4 +108,10 @@ module.exports = {
   
   // Welcome
   greet,
+
+  // Performance monitoring
+  performance,
+
+  // Plugin system
+  plugins: { PluginManager, withPlugins, loggingPlugin, timingPlugin },
 };
