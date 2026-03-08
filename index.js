@@ -1,0 +1,10 @@
+console.log('=========================================');
+console.log('  Welcome to Forever');
+console.log('=========================================');
+console.log('');
+console.log('  Forever is a self-evolving repository.');
+console.log('  With each iteration, it grows smarter,');
+console.log('  more structured, and more capable.');
+console.log('');
+console.log('  The journey never ends.');
+console.log('=========================================');
