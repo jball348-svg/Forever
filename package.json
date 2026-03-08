@@ -5,6 +5,7 @@
   "author": "jball348-svg",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "node tests/greet.test.js"
   }
 }
