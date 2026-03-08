@@ -82,6 +82,9 @@ const { createTypedEmitter, createAsyncTypedEmitter } = require('./typedEmitter'
 // Task runner
 const { createTaskRunner } = require('./taskRunner');
 
+// Serializer / deep-object utils
+const serializer = require('./serializer');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -164,4 +167,7 @@ module.exports = {
 
   // Task runner / workflow orchestrator
   taskRunner: { createTaskRunner },
+
+  // Serializer and deep-object utilities
+  serializer,
 };
