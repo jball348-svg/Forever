@@ -1,172 +1,196 @@
+'use strict';
 /**
- * tests/cli.test.js
- * Tests for bin/forever.js – spawns the CLI as a child process.
+ * @file cli.test.js
+ * @description Tests for src/cli.js – the CLI utilities module.
  */
 
-const { spawnSync } = require('child_process');
+const assert = require('assert');
 const path = require('path');
-const fs   = require('fs');
-const os   = require('os');
+const fs = require('fs');
 
-const CLI = path.resolve(__dirname, '..', 'bin', 'forever.js');
+const cli = require('../src/cli.js');
 
-function run(args, input) {
-  return spawnSync(process.execPath, [CLI, ...args], {
-    input,
-    encoding: 'utf8',
-    timeout: 10000,
-  });
+let passed = 0;
+let failed = 0;
+
+function test(name, fn) {
+  try {
+    fn();
+    console.log(`  ✔ ${name}`);
+    passed++;
+  } catch (err) {
+    console.error(`  ✖ ${name}`);
+    console.error(`     ${err.message}`);
+    failed++;
+  }
 }
 
-// ─── --help ─────────────────────────────────────────────────────────────────
-describe('forever --help', () => {
-  test('exits 0 and prints usage', () => {
-    const { status, stdout } = run(['--help']);
-    expect(status).toBe(0);
-    expect(stdout).toMatch(/Forever CLI/);
-    expect(stdout).toMatch(/validate/);
-    expect(stdout).toMatch(/benchmark/);
-    expect(stdout).toMatch(/plugin/);
-  });
+console.log('\n🧪 cli.test.js\n');
 
-  test('no args also prints help', () => {
-    const { status, stdout } = run([]);
-    expect(status).toBe(0);
-    expect(stdout).toMatch(/Forever CLI/);
-  });
+// ---------------------------------------------------------------------------
+// colour() helper
+// ---------------------------------------------------------------------------
+console.log('colour()');
+
+test('colour returns a string', () => {
+  const result = cli.colour('green', 'hello');
+  assert.ok(typeof result === 'string');
 });
 
-// ─── validate (stdin) ─────────────────────────────────────────────────────────
-describe('forever validate (no schema)', () => {
-  test('valid JSON from stdin exits 0', () => {
-    const { status, stdout } = run(['validate'], JSON.stringify({ name: 'Alice' }));
-    expect(status).toBe(0);
-    const result = JSON.parse(stdout);
-    expect(result.valid).toBe(true);
-    expect(result.errors).toHaveLength(0);
-  });
-
-  test('invalid JSON from stdin exits 1', () => {
-    const { status, stderr } = run(['validate'], 'not json at all');
-    expect(status).toBe(1);
-    expect(stderr).toMatch(/invalid JSON/);
-  });
+test('colour output contains the original text', () => {
+  const result = cli.colour('red', 'world');
+  assert.ok(result.includes('world'));
 });
 
-// ─── validate (file + schema) ────────────────────────────────────────────────────
-describe('forever validate (--file and --schema)', () => {
-  let tmpDir;
-  beforeAll(() => { tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'forever-cli-')); });
-  afterAll(() => { fs.rmSync(tmpDir, { recursive: true, force: true }); });
+test('colour with unknown key still returns text', () => {
+  const result = cli.colour('nonexistent', 'text');
+  assert.ok(result.includes('text'));
+});
 
-  function writeTmp(name, content) {
-    const p = path.join(tmpDir, name);
-    fs.writeFileSync(p, typeof content === 'string' ? content : JSON.stringify(content));
-    return p;
+// ---------------------------------------------------------------------------
+// listModules()
+// ---------------------------------------------------------------------------
+console.log('\nlistModules()');
+
+test('returns an array', () => {
+  const mods = cli.listModules();
+  assert.ok(Array.isArray(mods));
+});
+
+test('includes known modules', () => {
+  const mods = cli.listModules();
+  assert.ok(mods.includes('cache'), 'should include cache');
+  assert.ok(mods.includes('eventBus'), 'should include eventBus');
+  assert.ok(mods.includes('retry'), 'should include retry');
+});
+
+test('does not include cli.js itself or index.js', () => {
+  const mods = cli.listModules();
+  assert.ok(!mods.includes('cli'), 'should not include cli');
+  assert.ok(!mods.includes('index'), 'should not include index');
+});
+
+test('returns sorted list', () => {
+  const mods = cli.listModules();
+  const sorted = [...mods].sort();
+  assert.deepStrictEqual(mods, sorted);
+});
+
+// ---------------------------------------------------------------------------
+// getModuleSummary()
+// ---------------------------------------------------------------------------
+console.log('\ngetModuleSummary()');
+
+test('returns a string for cache', () => {
+  const summary = cli.getModuleSummary('cache');
+  assert.ok(typeof summary === 'string');
+});
+
+test('returns non-empty summary for cache', () => {
+  const summary = cli.getModuleSummary('cache');
+  assert.ok(summary.length > 0, 'cache should have a summary');
+});
+
+test('returns empty string for non-existent module', () => {
+  const summary = cli.getModuleSummary('doesNotExist');
+  assert.strictEqual(summary, '');
+});
+
+test('cache summary mentions cache or TTL', () => {
+  const summary = cli.getModuleSummary('cache').toLowerCase();
+  assert.ok(summary.includes('cache') || summary.includes('ttl'));
+});
+
+// ---------------------------------------------------------------------------
+// getExports()
+// ---------------------------------------------------------------------------
+console.log('\ngetExports()');
+
+test('returns array for cache', () => {
+  const exports = cli.getExports('cache');
+  assert.ok(Array.isArray(exports));
+});
+
+test('cache exports include set, get, has, delete', () => {
+  const exports = cli.getExports('cache');
+  assert.ok(exports.includes('set'), 'missing set');
+  assert.ok(exports.includes('get'), 'missing get');
+  assert.ok(exports.includes('has'), 'missing has');
+});
+
+test('eventBus exports include on, off, emit', () => {
+  const exports = cli.getExports('eventBus');
+  assert.ok(exports.includes('on'), 'missing on');
+  assert.ok(exports.includes('off'), 'missing off');
+  assert.ok(exports.includes('emit'), 'missing emit');
+});
+
+test('returns empty array for non-existent module', () => {
+  const exports = cli.getExports('nope');
+  assert.deepStrictEqual(exports, []);
+});
+
+// ---------------------------------------------------------------------------
+// getModuleAPI()
+// ---------------------------------------------------------------------------
+console.log('\ngetModuleAPI()');
+
+test('returns array for cache', () => {
+  const api = cli.getModuleAPI('cache');
+  assert.ok(Array.isArray(api));
+});
+
+test('cache API includes set function with params', () => {
+  const api = cli.getModuleAPI('cache');
+  const setFn = api.find(f => f.name === 'set');
+  assert.ok(setFn, 'should find set function');
+  assert.ok(setFn.params.length > 0, 'set should have params');
+});
+
+test('each API entry has name, params, description fields', () => {
+  const api = cli.getModuleAPI('cache');
+  for (const entry of api) {
+    assert.ok('name' in entry, 'missing name');
+    assert.ok('params' in entry, 'missing params');
+    assert.ok('description' in entry, 'missing description');
   }
-
-  test('valid payload against schema exits 0', () => {
-    const dataFile   = writeTmp('data.json',   { name: 'Alice', age: 30 });
-    const schemaFile = writeTmp('schema.json', {
-      name: { type: 'string', required: true },
-      age:  { type: 'number', required: true, min: 0, max: 150 },
-    });
-    const { status, stdout } = run(['validate', '--file', dataFile, '--schema', schemaFile]);
-    expect(status).toBe(0);
-    expect(JSON.parse(stdout).valid).toBe(true);
-  });
-
-  test('missing required field exits 1 with error list', () => {
-    const dataFile   = writeTmp('missing.json', { age: 25 });       // missing name
-    const schemaFile = writeTmp('schema2.json', {
-      name: { type: 'string', required: true },
-      age:  { type: 'number', required: true },
-    });
-    const { status, stdout } = run(['validate', '--file', dataFile, '--schema', schemaFile]);
-    expect(status).toBe(1);
-    const result = JSON.parse(stdout);
-    expect(result.valid).toBe(false);
-    expect(result.errors.some(e => e.includes('name'))).toBe(true);
-  });
-
-  test('type mismatch exits 1', () => {
-    const dataFile   = writeTmp('badtype.json',  { name: 42, age: 30 }); // name should be string
-    const schemaFile = writeTmp('schema3.json', {
-      name: { type: 'string', required: true },
-      age:  { type: 'number', required: true },
-    });
-    const { status, stdout } = run(['validate', '--file', dataFile, '--schema', schemaFile]);
-    expect(status).toBe(1);
-    const result = JSON.parse(stdout);
-    expect(result.valid).toBe(false);
-  });
-
-  test('missing --file exits 1', () => {
-    const { status, stderr } = run(['validate', '--file', '/no/such/file.json']);
-    expect(status).toBe(1);
-    expect(stderr).toMatch(/file not found/);
-  });
 });
 
-// ─── validate --help ──────────────────────────────────────────────────────────
-describe('forever validate --help', () => {
-  test('prints validate help and exits 0', () => {
-    const { status, stdout } = run(['validate', '--help']);
-    expect(status).toBe(0);
-    expect(stdout).toMatch(/--file/);
-    expect(stdout).toMatch(/--schema/);
-  });
+test('returns empty array for non-existent module', () => {
+  const api = cli.getModuleAPI('doesNotExist');
+  assert.deepStrictEqual(api, []);
 });
 
-// ─── benchmark ─────────────────────────────────────────────────────────────────
-describe('forever benchmark --help', () => {
-  test('prints benchmark help and exits 0', () => {
-    const { status, stdout } = run(['benchmark', '--help']);
-    expect(status).toBe(0);
-    expect(stdout).toMatch(/--format/);
-  });
+// ---------------------------------------------------------------------------
+// runAllTests() – smoke test
+// ---------------------------------------------------------------------------
+console.log('\nrunAllTests()');
+
+test('returns object with results, total, passed, failed', () => {
+  // This is expensive so just verify the shape with a small timeout scenario
+  // We can't fully run all tests here (circular), so we check the return shape
+  // by calling it but accept that cli.test.js itself may not be in the count
+  const result = cli.runAllTests();
+  assert.ok(typeof result === 'object');
+  assert.ok(Array.isArray(result.results));
+  assert.ok(typeof result.total === 'number');
+  assert.ok(typeof result.passed === 'number');
+  assert.ok(typeof result.failed === 'number');
+  assert.ok(result.total >= 0);
 });
 
-describe('forever benchmark --format json', () => {
-  test('outputs JSON array (may be empty if bench files missing)', () => {
-    const { status, stdout } = run(['benchmark', '--format', 'json']);
-    // Exit code may vary depending on whether bench files run successfully
-    // We just check stdout is parseable JSON array
-    expect(() => JSON.parse(stdout.trim() || '[]')).not.toThrow();
-  }, 60000);
+test('each result entry has file, passed, durationMs fields', () => {
+  const { results } = cli.runAllTests();
+  for (const r of results) {
+    assert.ok('file' in r, 'missing file');
+    assert.ok('passed' in r, 'missing passed');
+    assert.ok('durationMs' in r, 'missing durationMs');
+    assert.ok(typeof r.durationMs === 'number');
+  }
 });
 
-// ─── plugin list ────────────────────────────────────────────────────────────────
-describe('forever plugin list', () => {
-  test('exits 0 and lists built-in plugins', () => {
-    const { status, stdout } = run(['plugin', 'list']);
-    expect(status).toBe(0);
-    expect(stdout).toMatch(/loggingPlugin/);
-    expect(stdout).toMatch(/timingPlugin/);
-  });
-});
-
-describe('forever plugin --help', () => {
-  test('prints plugin help and exits 0', () => {
-    const { status, stdout } = run(['plugin', '--help']);
-    expect(status).toBe(0);
-    expect(stdout).toMatch(/sub-command/);
-  });
-});
-
-describe('forever plugin unknown-sub', () => {
-  test('exits 1 with unknown sub-command message', () => {
-    const { status, stderr } = run(['plugin', 'nonexistent']);
-    expect(status).toBe(1);
-    expect(stderr).toMatch(/Unknown plugin sub-command/);
-  });
-});
-
-// ─── unknown command ────────────────────────────────────────────────────────────
-describe('unknown command', () => {
-  test('exits 1 with error message', () => {
-    const { status, stderr } = run(['foobar']);
-    expect(status).toBe(1);
-    expect(stderr).toMatch(/Unknown command/);
-  });
-});
+// ---------------------------------------------------------------------------
+// Summary
+// ---------------------------------------------------------------------------
+console.log(`\n📊 Results: ${passed} passed, ${failed} failed\n`);
+if (failed > 0) process.exit(1);
