@@ -79,6 +79,9 @@ const { createLogger } = require('./structuredLogger');
 // Typed emitter
 const { createTypedEmitter, createAsyncTypedEmitter } = require('./typedEmitter');
 
+// Task runner
+const { createTaskRunner } = require('./taskRunner');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -158,4 +161,7 @@ module.exports = {
 
   // Typed event emitter
   typedEmitter: { createTypedEmitter, createAsyncTypedEmitter },
+
+  // Task runner / workflow orchestrator
+  taskRunner: { createTaskRunner },
 };

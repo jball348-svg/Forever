@@ -1,20 +1,25 @@
-Add a task runner / workflow orchestrator module. Create `src/taskRunner.js` with the following:
+Add a serialisation and deep-object utilities module. Create `src/serializer.js` with the following:
 
-1) `createTaskRunner(options?)` - factory. Options:
-   - `concurrency` (number, default Infinity) - max tasks running simultaneously
-   - `timeout` (number ms, default 0 = no timeout) - per-task execution timeout
-   - `onTaskStart(name)` - optional hook called when a task starts
-   - `onTaskEnd(name, result)` - optional hook called when a task finishes successfully
-   - `onTaskError(name, error)` - optional hook called when a task fails
+1) `deepClone(value)` - returns a deep clone of any JSON-serialisable value (handles objects, arrays, primitives, Date, null, undefined).
 
-2) The returned runner exposes:
-   - `task(name, dependencies, fn)` - register a named async task. `dependencies` is an array of task names that must complete before this task runs. `fn` receives the results of its dependencies as named properties: `fn({ depName: result, ... })`.
-   - `run(name?)` - run a specific task (and its dependencies) OR run all registered tasks if no name given. Returns a Promise that resolves to a map of `{ taskName: result }` for all tasks run.
-   - `getStatus()` - returns an object mapping task names to 'pending' | 'running' | 'done' | 'failed'
-   - `reset()` - reset all task statuses back to pending (allowing re-runs)
+2) `deepEqual(a, b)` - returns true if two values are deeply equal. Handles objects, arrays, Date, null, undefined, and primitive types. Does NOT rely on JSON.stringify (must handle object key order differences).
 
-3) Handle: circular dependency detection (throw at registration time), concurrent execution up to `concurrency` limit, per-task timeout (reject with a timeout error if exceeded), and proper dependency result passing.
+3) `deepMerge(...sources)` - deeply merges multiple objects together into a new object. Arrays from later sources replace (not concat) arrays from earlier ones. Primitive values from later sources override earlier ones.
 
-4) Write tests in `tests/taskRunner.test.js` covering: sequential tasks, parallel independent tasks, dependency result passing, concurrency limit, circular dependency detection, timeout, onTaskStart/End/Error hooks, reset and re-run.
+4) `flatten(obj, delimiter?, prefix?)` - flattens a nested object to a single-depth object with delimited keys (default delimiter '.'). E.g. `{ a: { b: 1 } }` becomes `{ 'a.b': 1 }`. Handles arrays (keys like 'arr.0', 'arr.1').
 
-5) Export `createTaskRunner` from `src/index.js`.
+5) `unflatten(obj, delimiter?)` - reverses `flatten`. Reconstructs a nested object from delimited keys.
+
+6) `pick(obj, keys)` - returns a shallow object with only the specified keys.
+
+7) `omit(obj, keys)` - returns a shallow object without the specified keys.
+
+8) `mapValues(obj, fn)` - returns a new object with each value mapped through `fn(value, key)`.
+
+9) `mapKeys(obj, fn)` - returns a new object with each key transformed by `fn(key, value)`.
+
+10) `groupBy(array, keyFn)` - groups an array of items into an object by the result of `keyFn(item)`.
+
+11) Write tests in `tests/serializer.test.js` for all functions covering edge cases (circular-safe deepEqual returning false, empty objects/arrays, nested structures, date equality).
+
+12) Export all functions from `src/index.js` as `serializer`.
