@@ -1,21 +1,23 @@
-Add a comprehensive rate limiter module. Create `src/ratelimiter.js` with the following:
+Add a Circuit Breaker module to make the library resilient to cascading failures. Create `src/circuitbreaker.js` with the following:
 
-1) `createTokenBucket(options)` - token bucket algorithm: options include `capacity` (max tokens), `refillRate` (tokens/sec), `refillInterval` (ms, default 1000). Returns object with:
-   - `consume(tokens = 1)` - returns true if tokens available (and deducts them), false otherwise
-   - `getTokens()` - returns current token count
-   - `reset()` - refills bucket to capacity
+1) `createCircuitBreaker(fn, options)` - wraps an async function with circuit breaker logic. Options:
+   - `failureThreshold` (number, default 5) - consecutive failures before opening the circuit
+   - `successThreshold` (number, default 2) - consecutive successes in half-open to close the circuit
+   - `timeout` (number ms, default 60000) - how long to stay open before trying half-open
+   - `onOpen(err)` - optional callback when circuit opens
+   - `onClose()` - optional callback when circuit closes
+   - `onHalfOpen()` - optional callback when circuit enters half-open
 
-2) `createSlidingWindow(options)` - sliding window algorithm: options include `limit` (max requests), `windowMs` (window duration in ms). Returns object with:
-   - `hit(key)` - records a hit for the given key, returns `{ allowed: bool, remaining: number, resetAt: Date }`
-   - `status(key)` - returns current status without consuming a slot
-   - `reset(key)` - clears all hits for a key
+2) The returned breaker object exposes:
+   - `async call(...args)` - calls the wrapped function; throws `CircuitOpenError` if the circuit is open
+   - `getState()` - returns 'closed' | 'open' | 'half-open'
+   - `getStats()` - returns `{ failures, successes, state, lastFailureAt, totalCalls, totalFailures }`
+   - `reset()` - manually resets to closed state
 
-3) `createFixedWindow(options)` - fixed window algorithm: options include `limit`, `windowMs`. Returns same interface as sliding window.
+3) Define and export `CircuitOpenError` (extends Error) with a `state` property.
 
-4) `createRateLimiter(options)` - unified factory that picks the algorithm via `options.algorithm` ('token-bucket' | 'sliding-window' | 'fixed-window', default 'sliding-window'), passes remaining options through to the chosen implementation.
+4) Write tests in `tests/circuitbreaker.test.js` covering: successful calls pass through, failures increment counter, circuit opens after threshold, CircuitOpenError is thrown while open, circuit moves to half-open after timeout, closes after success threshold, reset() works, and callbacks fire correctly.
 
-5) Write tests in `tests/ratelimiter.test.js` covering: basic allow/deny, window reset, token refill, key isolation, and edge cases (zero limit, negative tokens).
+5) Export `createCircuitBreaker` and `CircuitOpenError` from `src/index.js`.
 
-6) Export `createRateLimiter`, `createTokenBucket`, `createSlidingWindow`, `createFixedWindow` from `src/index.js`.
-
-7) Add a `forever ratelimit` CLI subcommand in `src/cli.js` that shows a short demo: creates a sliding-window limiter (5 req / 10s), fires 7 requests, and prints the allow/deny results in a formatted table.
+6) Add a `circuitBreakerDemo` function to `src/cli.js` that simulates a flaky remote call (fails 6 times, then succeeds), showing state transitions in a readable log format.
