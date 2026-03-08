@@ -1,1 +1,1 @@
-Add a .gitignore file appropriate for a Node.js project. It should exclude node_modules/, .env files, OS-specific files like .DS_Store, and any build/dist output directories. This is a standard best practice for any Node.js repo.
+Add a CHANGELOG.md file to the repo to track the evolution of this project. Document all the changes made so far in reverse-chronological order (newest first), using standard changelog format with version numbers, dates, and brief descriptions of what was added or changed.
