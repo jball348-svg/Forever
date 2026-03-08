@@ -1,0 +1,267 @@
+{
+  "feat": {
+    "title": "Features",
+    "commits": [
+      {
+        "sha": "2f7f647",
+        "message": "feat: add CI/CD workflow, ESLint config, and CI badge in CONCEPT.md",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "eee71d6",
+        "message": "feat: add TypeScript type definitions (types/index.d.ts), example, README, and update package.json",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "e21f16d",
+        "message": "feat: add CLI tool (bin/forever.js), CLI tests, bin entry in package.json",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "69e95e1",
+        "message": "feat: add plugin system with PluginManager, withPlugins, loggingPlugin, timingPlugin + tests",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "e8ff957",
+        "message": "feat: add comprehensive performance monitoring and benchmarking suite",
+        "date": "2026-03-08"
+      }
+    ]
+  },
+  "other": {
+    "title": "Other Changes",
+    "commits": [
+      {
+        "sha": "10a6065",
+        "message": "Update README.md",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "67c20ca",
+        "message": "update",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "8701787",
+        "message": "Iteration 25: update CHANGELOG.md, bump version to 0.5.0, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "c519ee2",
+        "message": "Iteration 24: add src/decorators.js + tests/decorators.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "be92347",
+        "message": "Iteration 23: add src/pool.js + tests/pool.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "3b66e9c",
+        "message": "Iteration 22: add src/stream.js + tests/stream.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "f0114bc",
+        "message": "Iteration 21: add src/memoize.js + tests/memoize.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "6e7f0b9",
+        "message": "Iteration 20: add src/commandBus.js + tests/commandBus.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "b63a412",
+        "message": "Iteration 19: add src/fsm.js + tests/fsm.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "1576ca3",
+        "message": "Iteration 18: add src/debounce.js + tests/debounce.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "ad10a79",
+        "message": "Iteration 17: add src/di.js + tests/di.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "814be2c",
+        "message": "Iteration 16: add src/observable.js + tests/observable.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "96c1ff8",
+        "message": "Iteration 15: add src/middleware.js + tests/middleware.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "19e990b",
+        "message": "Iteration 14: add src/queue.js + tests/queue.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "d5b0248",
+        "message": "Iteration 13: add src/retry.js + tests/retry.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "91f88fd",
+        "message": "Iteration 12: add src/cache.js + tests/cache.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "2bd412a",
+        "message": "Iteration 11: add src/router.js + tests/router.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "3511655",
+        "message": "Iteration 10: add src/validator.js + tests/validator.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "012a1be",
+        "message": "Iteration 9: add src/stateManager.js + tests/stateManager.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "c352d24",
+        "message": "Iteration 8: add src/scheduler.js + tests/scheduler.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "1ac9b87",
+        "message": "Iteration 7: add src/pipeline.js + tests/pipeline.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "603f7bf",
+        "message": "Iteration 6: add src/utils.js + tests/utils.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "06467d5",
+        "message": "Iteration 5: add src/store.js + tests/store.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "cc24b5f",
+        "message": "Iteration 4: add src/eventBus.js + tests/eventBus.test.js, update test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "394ff12",
+        "message": "Iteration 3: add tests/logger.test.js, update npm test script, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "8deeccc",
+        "message": "Iteration 2: add src/config.js, update index.js, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "6580f27",
+        "message": "Iteration 1: add src/logger.js, update index.js, set next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "1be2de5",
+        "message": "Update README.md",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "7d74e05",
+        "message": "Add GitHub Actions CI workflow and update next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "724cef6",
+        "message": "Add tests/greet.test.js, add test script to package.json, update next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "6b11c80",
+        "message": "Refactor into greet module, update index.js, and update next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "6e66189",
+        "message": "Add CHANGELOG.md and update next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "568f977",
+        "message": "Add .gitignore and update next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "22c6544",
+        "message": "Add index.js entry point and update next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "c8895cb",
+        "message": "Add package.json and update next_task",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "c48fc0c",
+        "message": "update",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "2ff78b3",
+        "message": "Add .gitignore file with comprehensive patterns for common development environments",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "d77a8f4",
+        "message": "Add comprehensive documentation in DOCUMENTATION.md",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "a70c8ec",
+        "message": "Update the next_task file with new instructions.",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "ba1f406",
+        "message": "Create CONTRIBUTORS.md file with contributor details",
+        "date": "2026-03-08"
+      },
+      {
+        "sha": "dd5579a",
+        "message": "Add CHANGELOG.md and update next_task",
+        "date": "2026-03-07"
+      },
+      {
+        "sha": "d015183",
+        "message": "Add CONCEPT.md and update next_task",
+        "date": "2026-03-07"
+      },
+      {
+        "sha": "580e7b5",
+        "message": "Add working title and update next_task",
+        "date": "2026-03-07"
+      },
+      {
+        "sha": "332789f",
+        "message": "Update next_task",
+        "date": "2026-03-06"
+      },
+      {
+        "sha": "0b8ddcd",
+        "message": "Create README.md",
+        "date": "2026-03-06"
+      },
+      {
+        "sha": "f5bb1da",
+        "message": "Create next_task",
+        "date": "2026-03-06"
+      }
+    ]
+  }
+}
