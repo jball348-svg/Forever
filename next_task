@@ -1,1 +1,21 @@
-Add a comprehensive metrics and monitoring system. Create `src/metrics.js` with the following: 1) `metrics.counter(name, labels)` - creates a counter metric that can be incremented with `counter.inc(labels, value)` and retrieved with `counter.get(labels)`. 2) `metrics.gauge(name, labels)` - creates a gauge metric that can be set with `gauge.set(labels, value)` and retrieved with `gauge.get(labels)`. 3) `metrics.histogram(name, labels, buckets)` - creates a histogram with configurable buckets (default: [0.1, 0.5, 1, 2, 5, 10] seconds) that can observe values with `histogram.observe(labels, value)` and get statistics with `histogram.get(labels)`. 4) `metrics.timer(name, labels)` - convenience wrapper around histogram for timing operations, returns a function that when called stops the timer. 5) Built-in metrics collection: (a) 'nodejs_memory_heap_used_bytes' - gauge tracking heap usage, (b) 'nodejs_eventloop_lag_seconds' - histogram tracking event loop lag, (c) 'forever_operations_total' - counter tracking total operations performed, (d) 'forever_operation_duration_seconds' - histogram tracking operation durations. 6) `metrics.getSnapshot()` - returns all metrics in Prometheus text format for easy scraping. 7) `metrics.reset()` - resets all metrics to initial state. 8) `metrics.exportJSON()` - returns all metrics as JSON object. 9) Write tests in `tests/metrics.test.js`. 10) Export from `src/index.js`. 11) Add `forever metrics` CLI subcommand that displays current metrics in a formatted table. 12) Integrate with health system to expose basic metrics via the health endpoint.
+Add a comprehensive rate limiter module. Create `src/ratelimiter.js` with the following:
+
+1) `createTokenBucket(options)` - token bucket algorithm: options include `capacity` (max tokens), `refillRate` (tokens/sec), `refillInterval` (ms, default 1000). Returns object with:
+   - `consume(tokens = 1)` - returns true if tokens available (and deducts them), false otherwise
+   - `getTokens()` - returns current token count
+   - `reset()` - refills bucket to capacity
+
+2) `createSlidingWindow(options)` - sliding window algorithm: options include `limit` (max requests), `windowMs` (window duration in ms). Returns object with:
+   - `hit(key)` - records a hit for the given key, returns `{ allowed: bool, remaining: number, resetAt: Date }`
+   - `status(key)` - returns current status without consuming a slot
+   - `reset(key)` - clears all hits for a key
+
+3) `createFixedWindow(options)` - fixed window algorithm: options include `limit`, `windowMs`. Returns same interface as sliding window.
+
+4) `createRateLimiter(options)` - unified factory that picks the algorithm via `options.algorithm` ('token-bucket' | 'sliding-window' | 'fixed-window', default 'sliding-window'), passes remaining options through to the chosen implementation.
+
+5) Write tests in `tests/ratelimiter.test.js` covering: basic allow/deny, window reset, token refill, key isolation, and edge cases (zero limit, negative tokens).
+
+6) Export `createRateLimiter`, `createTokenBucket`, `createSlidingWindow`, `createFixedWindow` from `src/index.js`.
+
+7) Add a `forever ratelimit` CLI subcommand in `src/cli.js` that shows a short demo: creates a sliding-window limiter (5 req / 10s), fires 7 requests, and prints the allow/deny results in a formatted table.
