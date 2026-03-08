@@ -67,6 +67,9 @@ const metrics = require('./metrics');
 // Rate limiting
 const { createRateLimiter, createTokenBucket, createSlidingWindow, createFixedWindow } = require('./ratelimiter');
 
+// Circuit breaker
+const { createCircuitBreaker, CircuitOpenError } = require('./circuitbreaker');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -134,4 +137,7 @@ module.exports = {
 
   // Rate limiting
   rateLimiter: { createRateLimiter, createTokenBucket, createSlidingWindow, createFixedWindow },
+
+  // Circuit breaker
+  circuitBreaker: { createCircuitBreaker, CircuitOpenError },
 };
