@@ -1,0 +1,26 @@
+# Node.js
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+
+# macOS
+.DS_Store
+
+# IDE Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment Configuration
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
