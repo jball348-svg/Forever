@@ -142,7 +142,6 @@ function createTypedEmitter() {
  */
 function createAsyncTypedEmitter() {
   const base = createTypedEmitter();
-  const originalEmit = base.emit.bind(base);
 
   // Override emit to be async
   return Object.assign({}, base, {

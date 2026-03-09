@@ -6,7 +6,7 @@
  * Usage: node benchmarks/index.js
  */
 
-const { benchmark, exportJSON, exportCSV } = require('../src/performance');
+const { exportJSON, exportCSV } = require('../src/performance');
 const fs   = require('fs');
 const path = require('path');
 
@@ -41,7 +41,6 @@ async function runAll() {
     const suiteResults = await suite.run();
     for (const r of suiteResults) {
       results.push(r);
-      const bar = '█'.repeat(Math.min(Math.round(r.mean * 10), 40));
       console.log(
         `  ${r.name.padEnd(30)} mean: ${r.mean.toFixed(3).padStart(8)} ms  ` +
         `p95: ${r.p95.toFixed(3).padStart(8)} ms  ` +

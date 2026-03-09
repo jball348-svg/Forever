@@ -1,5 +1,4 @@
 const { execSync } = require('child_process');
-const path = require('path');
 
 // Mock child_process.execSync for testing
 const originalExecSync = execSync;

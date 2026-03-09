@@ -10,13 +10,13 @@ function createHashTable(initialSize = 16) {
   // Simple hash function for different key types
   function hash(key) {
     if (typeof key === 'string') {
-      let hash = 0;
+      let hashValue = 0;
       for (let i = 0; i < key.length; i++) {
         const char = key.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // Convert to 32-bit integer
+        hashValue = ((hashValue << 5) - hashValue) + char;
+        hashValue = hashValue & hashValue; // Convert to 32-bit integer
       }
-      return Math.abs(hash);
+      return Math.abs(hashValue);
     } else if (typeof key === 'number') {
       // Handle integers and floats
       if (Number.isInteger(key)) {
@@ -28,14 +28,14 @@ function createHashTable(initialSize = 16) {
     } else if (typeof key === 'object' && key !== null) {
       // For objects, use a simple object hash
       // Note: This is basic and may have collisions
-      let hash = 0;
+      let hashValue = 0;
       const str = JSON.stringify(key);
       for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
+        hashValue = ((hashValue << 5) - hashValue) + char;
+        hashValue = hashValue & hashValue;
       }
-      return Math.abs(hash);
+      return Math.abs(hashValue);
     } else {
       // For other types (boolean, undefined, symbol, function)
       return hash(String(key));

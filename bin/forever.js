@@ -19,7 +19,7 @@
 
 const path = require('path');
 const fs   = require('fs');
-const { execFileSync, spawnSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 // Load CLI utilities from src/cli.js
 const cli = require('../src/cli.js');

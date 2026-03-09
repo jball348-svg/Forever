@@ -67,8 +67,8 @@ function createTrie() {
       return false;
     }
     
-    function deleteHelper(node, word, index) {
-      if (index === word.length) {
+    function deleteHelper(node, wordToDelete, index) {
+      if (index === wordToDelete.length) {
         if (!node.isEnd) {
           return false;
         }
@@ -79,18 +79,19 @@ function createTrie() {
         return node.children.size === 0;
       }
       
-      const char = word[index];
-      if (!node.children.has(char)) {
+      const char = wordToDelete[index];
+      const childNode = node.children.get(char);
+      
+      if (!childNode) {
         return false;
       }
       
-      const childNode = node.children.get(char);
-      const shouldDeleteChild = deleteHelper(childNode, word, index + 1);
+      const shouldDeleteChild = deleteHelper(childNode, wordToDelete, index + 1);
       
       if (shouldDeleteChild) {
         node.children.delete(char);
         
-        // If current node is not end of word and has no children, it can be deleted
+        // Delete node if it's not end of another word and has no children
         return !node.isEnd && node.children.size === 0;
       }
       

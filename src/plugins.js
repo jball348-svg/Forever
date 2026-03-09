@@ -166,7 +166,7 @@ const loggingPlugin = {
       args.length ? `with ${args.length} arg(s)` : '(no args)'
     );
   },
-  afterCall({ fnName, result, endTime, duration }) {
+  afterCall({ fnName, endTime, duration }) {
     console.log(
       `[${new Date(endTime).toISOString()}] ✔ ${fnName} returned in ${duration}ms`
     );

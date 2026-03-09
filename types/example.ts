@@ -48,7 +48,7 @@ const user = cache.get('user:1');  // unknown
 const has  = cache.has('user:1'); // boolean
 
 // ─── EventBus ──────────────────────────────────────────────────────────────────
-const handler: EventHandler<string> = (msg) => console.log(msg);
+const handler: EventHandler<string> = (msg: string) => console.log(msg);
 const unsubscribe = eventBus.on<string>('message', handler);
 eventBus.emit<string>('message', 'hello');
 unsubscribe();

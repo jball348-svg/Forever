@@ -107,7 +107,7 @@ const { createLinkedList } = require('./linkedList');
 const { createStack } = require('./stack');
 
 // Data Queue
-const { createQueue } = require('./dataQueue');
+const { createQueue: createDataQueue } = require('./dataQueue');
 
 // Re-export everything under sensible namespaces
 module.exports = {
@@ -217,5 +217,5 @@ module.exports = {
   stack: { createStack },
 
   // Data Queue
-  dataQueue: { createQueue },
+  dataQueue: { createQueue: createDataQueue },
 };

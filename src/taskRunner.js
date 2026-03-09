@@ -166,6 +166,8 @@ function createTaskRunner(options = {}) {
           }
           resolve(Object.fromEntries(results));
         }
+        // Explicit return for async function
+        return;
       }, 0);
 
       // Kick off first wave immediately

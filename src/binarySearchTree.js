@@ -8,8 +8,12 @@ function createBinarySearchTree(comparator) {
 
   // Default comparator for numeric values
   const defaultComparator = (a, b) => {
-    if (a < b) return -1;
-    if (a > b) return 1;
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
     return 0;
   };
 
@@ -31,7 +35,7 @@ function createBinarySearchTree(comparator) {
     }
 
     let current = root;
-    while (true) {
+    while (current) {
       const cmp = compare(value, current.value);
       
       if (cmp === 0) {

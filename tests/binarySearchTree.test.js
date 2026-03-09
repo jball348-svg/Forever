@@ -387,10 +387,16 @@ describe('Binary Search Tree', () => {
       // Verify BST property: each node is greater than all nodes in left subtree
       // and less than all nodes in right subtree
       const verifyBST = (node, min, max) => {
-        if (node === null) return true;
+        if (node === null) {
+          return true;
+        }
         
-        if (min !== null && node.value <= min) return false;
-        if (max !== null && node.value >= max) return false;
+        if (min !== null && node.value <= min) {
+          return false;
+        }
+        if (max !== null && node.value >= max) {
+          return false;
+        }
         
         return verifyBST(node.left, min, node.value) && 
                verifyBST(node.right, node.value, max);
