@@ -1,24 +1,19 @@
-Add a `src/semaphore.js` async concurrency-limiting module with the following:
+Add a `src/trie.js` prefix-tree (trie) data structure module with the following:
 
-1) `createSemaphore(concurrency)` - factory function.
-   - `concurrency` (number, required) - maximum number of concurrent operations allowed.
-   - Throws if concurrency < 1.
+1) `createTrie()` - factory function with no arguments.
 
 2) Returns an object with:
-   - `acquire()` - returns a Promise that resolves when a slot is available. Callers MUST call `release()` when done.
-   - `release()` - releases one slot, allowing the next waiting caller to proceed.
-   - `run(fn)` - convenience wrapper: acquires a slot, calls `fn()`, releases on completion (or error). Returns a Promise that resolves/rejects with fn's result.
-   - `available` (getter) - number of currently free slots.
-   - `waiting` (getter) - number of callers currently queued waiting for a slot.
+   - `insert(word)` - insert a string into the trie.
+   - `search(word)` - returns true if the exact word exists in the trie.
+   - `startsWith(prefix)` - returns true if any inserted word starts with prefix.
+   - `delete(word)` - removes a word from the trie. Returns true if removed, false if not found.
+   - `autocomplete(prefix, limit?)` - returns an array of all words in the trie that start with prefix. Optional `limit` caps results (default: no limit). Returns empty array if no matches.
+   - `size` (getter) - total number of words currently stored.
+   - `clear()` - removes all words.
+   - `toArray()` - returns all stored words as a sorted array.
 
-3) Implement using a simple internal counter + a queue of resolve callbacks (no external deps).
+3) Implement using a plain node object (children map + isEnd flag). No external deps.
 
-4) Write tests in `tests/semaphore.test.js` covering:
-   - Allows up to `concurrency` simultaneous operations.
-   - Queues excess operations until a slot is released.
-   - `available` and `waiting` counts are correct before/during/after.
-   - `run()` resolves with the fn return value.
-   - `run()` releases the slot even if fn throws.
-   - Works with concurrency = 1 (mutex behaviour).
+4) Write tests in `tests/trie.test.js` covering: insert + search (hit and miss), startsWith (hit and miss), delete (existing, non-existing, prefix-shared words), autocomplete with and without limit, size getter before/after insert/delete/clear, toArray sorted output, clear(), and edge cases (empty string, single char, duplicate inserts).
 
-5) Export `createSemaphore` from `src/index.js` as `semaphore`.
+5) Export `createTrie` from `src/index.js` as `trie`.
