@@ -88,6 +88,9 @@ const serializer = require('./serializer');
 // Feature flags
 const { createFlagStore } = require('./featureFlags');
 
+// Undo/redo history
+const { createUndoHistory } = require('./undoHistory');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -176,4 +179,7 @@ module.exports = {
 
   // Feature flags / toggles with rollout support
   featureFlags: { createFlagStore },
+
+  // Undo/redo history manager
+  undoHistory: { createUndoHistory },
 };
