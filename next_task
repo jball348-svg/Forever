@@ -1,29 +1,35 @@
-Add a `src/tree.js` General Tree data structure module with the following:
+Add a `src/graph.js` Graph data structure module with the following:
 
-1) `createTree(value)` - factory function that creates a tree with a root node containing the given value.
+1) `createGraph(directed = false)` - factory function that creates an undirected graph by default, or directed graph if specified.
 
 2) Returns an object with:
-   - `root` - reference to the root node (read-only)
-   - `add(parentValue, childValue)` - add child node to parent with given values. Returns true if added, false if parent not found.
-   - `remove(value)` - remove node and all its descendants. Returns true if removed, false if not found.
-   - `find(value)` - find node with given value. Returns node reference or undefined.
-   - `contains(value)` - returns true if value exists in tree.
-   - `size()` - returns total number of nodes in tree.
-   - `height()` - returns height of tree (max depth).
-   - `isLeaf(value)` - returns true if node with given value is a leaf.
-   - `siblings(value)` - returns array of sibling values for given node value.
-   - `children(value)` - returns array of child values for given node value.
-   - `parent(value)` - returns parent value for given node value, or null if root.
-   - `breadthFirstTraversal()` - returns array of values in breadth-first order.
-   - `depthFirstTraversal()` - returns array of values in depth-first (pre-order) order.
-   - `toArray()` - returns array of all values in depth-first order.
-   - `clear()` - remove all nodes.
-   - `clone()` - create deep copy of the tree.
+   - `addVertex(value)` - add a vertex with the given value. Returns true if added, false if already exists.
+   - `removeVertex(value)` - remove vertex and all its edges. Returns true if removed, false if not found.
+   - `addEdge(fromValue, toValue, weight = 1)` - add edge between two vertices. Returns true if added, false if vertices not found.
+   - `removeEdge(fromValue, toValue)` - remove edge between two vertices. Returns true if removed, false if not found.
+   - `hasVertex(value)` - returns true if vertex exists.
+   - `hasEdge(fromValue, toValue)` - returns true if edge exists.
+   - `getVertex(value)` - get vertex object with value and edges.
+   - `getEdge(fromValue, toValue)` - get edge object with weight and vertices.
+   - `vertices()` - returns array of all vertex values.
+   - `edges()` - returns array of all edges as {from, to, weight} objects.
+   - `degree(value)` - returns degree of vertex (number of edges). For directed graphs, returns {in, out}.
+   - `neighbors(value)` - returns array of neighboring vertex values.
+   - `size()` - returns object with {vertices, edges}.
+   - `clear()` - remove all vertices and edges.
+   - `clone()` - create deep copy of the graph.
 
-3) Each node should have: value, children array, reference to parent.
+3) Graph algorithms:
+   - `breadthFirstSearch(startValue, callback)` - BFS traversal with callback.
+   - `depthFirstSearch(startValue, callback)` - DFS traversal with callback.
+   - `shortestPath(fromValue, toValue)` - returns array of vertex values representing shortest path (Dijkstra's for weighted, BFS for unweighted).
+   - `hasCycle()` - returns true if graph contains a cycle.
+   - `isConnected()` - returns true if graph is connected.
+   - `topologicalSort()` - returns array of vertex values in topological order (for directed acyclic graphs).
+   - `minimumSpanningTree()` - returns MST using Prim's algorithm (for undirected weighted graphs).
 
-4) Write tests in `tests/tree.test.js` covering: all operations (add, remove, find, contains), tree traversal methods, edge cases (empty tree, single node, removing root), tree properties (height, size, leaf detection), cloning functionality, and complex tree structures.
+4) Write tests in `tests/graph.test.js` covering: all operations (add/remove vertices and edges), graph algorithms, edge cases (empty graph, single vertex, disconnected components), directed vs undirected graphs, weighted vs unweighted graphs, and complex graph structures.
 
-5) Export `createTree` from `src/index.js` as `tree`.
+5) Export `createGraph` from `src/index.js` as `graph`.
 
-6) Bonus: Add support for tree traversal with callbacks (pre-order, post-order, in-order for binary subtrees), path finding between nodes, and subtree extraction.
+6) Bonus: Add support for graph visualization (adjacency matrix representation), graph isomorphism detection, and community detection algorithms.

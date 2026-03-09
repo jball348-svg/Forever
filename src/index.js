@@ -112,6 +112,9 @@ const { createQueue: createDataQueue } = require('./dataQueue');
 // Hash Table
 const { createHashTable } = require('./hashTable');
 
+// Tree
+const { createTree } = require('./tree');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -224,4 +227,7 @@ module.exports = {
 
   // Hash Table
   hashTable: { createHashTable },
+
+  // Tree
+  tree: { createTree },
 };
