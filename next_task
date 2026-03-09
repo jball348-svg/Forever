@@ -1,24 +1,28 @@
-Add a `src/binarySearchTree.js` Binary Search Tree (BST) data structure module with the following:
+Add a `src/linkedList.js` Doubly Linked List data structure module with the following:
 
-1) `createBinarySearchTree(comparator?)` - factory function with optional comparator function (defaults to numeric comparison).
+1) `createLinkedList()` - factory function with no arguments.
 
 2) Returns an object with:
-   - `insert(value)` - insert a value into the BST. Returns true if inserted, false if duplicate.
-   - `search(value)` - returns true if the value exists in the BST.
-   - `delete(value)` - removes a value from the BST. Returns true if removed, false if not found.
-   - `findMin()` - returns the minimum value in the tree, or null if empty.
-   - `findMax()` - returns the maximum value in the tree, or null if empty.
-   - `inOrderTraversal()` - returns an array of values in ascending order.
-   - `preOrderTraversal()` - returns an array of values in pre-order.
-   - `postOrderTraversal()` - returns an array of values in post-order.
-   - `height` (getter) - height of the tree (0 for empty, 1 for single node).
-   - `size` (getter) - total number of nodes.
-   - `isBalanced()` - returns true if the tree is height-balanced.
-   - `clear()` - removes all nodes.
-   - `toArray()` - alias for inOrderTraversal.
+   - `append(value)` - add node to end of list.
+   - `prepend(value)` - add node to beginning of list.
+   - `insertAt(index, value)` - insert value at specific index. Returns true if inserted, false if invalid index.
+   - `remove(value)` - remove first occurrence of value. Returns true if removed, false if not found.
+   - `removeAt(index)` - remove node at index. Returns removed value or null if invalid index.
+   - `get(index)` - get value at index. Returns value or null if invalid index.
+   - `indexOf(value)` - get first index of value. Returns -1 if not found.
+   - `contains(value)` - returns true if value exists in list.
+   - `toArray()` - convert list to array.
+   - `fromArray(array)` - replace list contents with array values.
+   - `size` (getter) - number of nodes in list.
+   - `isEmpty()` - returns true if list is empty.
+   - `clear()` - remove all nodes.
+   - `reverse()` - reverse the list in place.
+   - `forEach(callback)` - iterate over values with callback(value, index).
+   - `map(callback)` - create new array with callback(value, index).
+   - `filter(callback)` - create new array with elements that pass callback test.
 
-3) Implement using a node object with value, left, right properties. No external deps.
+3) Implement using node objects with value, next, prev properties. Maintain head and tail pointers.
 
-4) Write tests in `tests/binarySearchTree.test.js` covering: insert + search (hit and miss), delete (leaf, one child, two children, root, non-existing), findMin/findMax (empty tree, single node, multiple nodes), all three traversal methods, height calculation (empty, single, balanced, unbalanced), size tracking, isBalanced detection, clear functionality, custom comparator (strings, objects), and edge cases (duplicate inserts, large datasets).
+4) Write tests in `tests/linkedList.test.js` covering: all operations (append, prepend, insertAt, remove, removeAt, get, indexOf, contains), edge cases (empty list, single element, invalid indices), toArray/fromArray conversion, size tracking, clear/reverse operations, iteration methods (forEach, map, filter), and performance with large datasets.
 
-5) Export `createBinarySearchTree` from `src/index.js` as `binarySearchTree`.
+5) Export `createLinkedList` from `src/index.js` as `linkedList`.

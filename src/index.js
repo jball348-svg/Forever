@@ -100,6 +100,9 @@ const { createTrie } = require('./trie');
 // Binary Search Tree
 const { createBinarySearchTree } = require('./binarySearchTree');
 
+// Linked List
+const { createLinkedList } = require('./linkedList');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -200,4 +203,7 @@ module.exports = {
 
   // Binary Search Tree
   binarySearchTree: { createBinarySearchTree },
+
+  // Linked List
+  linkedList: { createLinkedList },
 };
