@@ -2,10 +2,10 @@
  * General Tree data structure implementation
  */
 
-function createTree(value) {
+function createTree(initialValue) {
   // Create root node
   const root = {
-    value,
+    value: initialValue,
     children: [],
     parent: null
   };

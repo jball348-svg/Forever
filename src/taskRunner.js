@@ -167,7 +167,7 @@ function createTaskRunner(options = {}) {
           resolve(Object.fromEntries(results));
         }
         // Continue polling
-        return;
+        return undefined;
       }, 0);
 
       // Kick off first wave immediately

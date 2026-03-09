@@ -130,11 +130,11 @@ export type RetryOptions = {
   delay?: number;
   backoff?: 'linear' | 'exponential';
 };
-export type FSMConfig<S, E> = {
+export type FSMConfig<S extends string | number | symbol, E extends string | number | symbol> = {
   initial: S;
   states: Partial<Record<S, { on: Partial<Record<E, S>> }>>;
 };
-export type FSM<S, E> = {
+export type FSM<S extends string | number | symbol, E extends string | number | symbol> = {
   state: S;
   send: (event: E) => void;
 };
