@@ -19,7 +19,7 @@ function createTypedEmitter() {
   const handlers = new Map();
 
   function _getOrCreate(event) {
-    if (!handlers.has(event)) handlers.set(event, new Set());
+    if (!handlers.has(event)) {handlers.set(event, new Set());}
     return handlers.get(event);
   }
 
@@ -60,7 +60,7 @@ function createTypedEmitter() {
      */
     off(event, handler) {
       const set = handlers.get(event);
-      if (!set) return;
+      if (!set) {return;}
       // Also remove if handler was wrapped by `once`
       for (const fn of set) {
         if (fn === handler || fn._original === handler) {
@@ -68,7 +68,7 @@ function createTypedEmitter() {
           break;
         }
       }
-      if (set.size === 0) handlers.delete(event);
+      if (set.size === 0) {handlers.delete(event);}
     },
 
     /**
@@ -81,12 +81,12 @@ function createTypedEmitter() {
     emit(event, ...args) {
       const set = handlers.get(event);
       if (set) {
-        for (const fn of [...set]) fn(...args);
+        for (const fn of [...set]) {fn(...args);}
       }
       if (event !== WILDCARD) {
         const wildcards = handlers.get(WILDCARD);
         if (wildcards) {
-          for (const fn of [...wildcards]) fn(event, ...args);
+          for (const fn of [...wildcards]) {fn(event, ...args);}
         }
       }
     },
@@ -155,10 +155,10 @@ function createAsyncTypedEmitter() {
      */
     async emit(event, ...args) {
       const set = base.listeners(event);
-      for (const fn of set) await fn(...args);
+      for (const fn of set) {await fn(...args);}
       if (event !== WILDCARD) {
         const wildcards = base.listeners(WILDCARD);
-        for (const fn of wildcards) await fn(event, ...args);
+        for (const fn of wildcards) {await fn(event, ...args);}
       }
     }
   });

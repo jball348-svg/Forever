@@ -62,9 +62,9 @@ function createFlagStore(options = {}) {
   }
 
   function _isEnabledForContext(cfg, context) {
-    if (!cfg.enabled) return false;
+    if (!cfg.enabled) {return false;}
     if (typeof cfg.rolloutPercentage === 'number' && cfg.rolloutPercentage < 100) {
-      const userId = context && context.userId != null
+      const userId = context && context.userId !== null
         ? String(context.userId)
         : String(Math.random()); // no userId = random every time
       const bucket = _hashToBucket(userId);
@@ -83,7 +83,7 @@ function createFlagStore(options = {}) {
      */
     isEnabled(flagName, context) {
       const cfg = store.get(flagName);
-      if (!cfg) return false;
+      if (!cfg) {return false;}
       return _isEnabledForContext(cfg, context);
     },
 
@@ -94,7 +94,7 @@ function createFlagStore(options = {}) {
      */
     enable(flagName) {
       const cfg = store.get(flagName);
-      if (!cfg) throw new Error(`Unknown flag: '${flagName}'`);
+      if (!cfg) {throw new Error(`Unknown flag: '${flagName}'`);}
       const old = cfg.enabled;
       cfg.enabled = true;
       _fire(flagName, true, old);
@@ -107,7 +107,7 @@ function createFlagStore(options = {}) {
      */
     disable(flagName) {
       const cfg = store.get(flagName);
-      if (!cfg) throw new Error(`Unknown flag: '${flagName}'`);
+      if (!cfg) {throw new Error(`Unknown flag: '${flagName}'`);}
       const old = cfg.enabled;
       cfg.enabled = false;
       _fire(flagName, false, old);
@@ -124,7 +124,7 @@ function createFlagStore(options = {}) {
         throw new Error('rolloutPercentage must be between 0 and 100');
       }
       const cfg = store.get(flagName);
-      if (!cfg) throw new Error(`Unknown flag: '${flagName}'`);
+      if (!cfg) {throw new Error(`Unknown flag: '${flagName}'`);}
       cfg.rolloutPercentage = percentage;
     },
 

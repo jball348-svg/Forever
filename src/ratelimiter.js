@@ -17,8 +17,8 @@
  * @returns {{ consume: Function, getTokens: Function, reset: Function }}
  */
 function createTokenBucket({ capacity, refillRate, refillInterval = 1000 }) {
-  if (!capacity || capacity <= 0) throw new Error('capacity must be a positive number');
-  if (!refillRate || refillRate <= 0) throw new Error('refillRate must be a positive number');
+  if (!capacity || capacity <= 0) {throw new Error('capacity must be a positive number');}
+  if (!refillRate || refillRate <= 0) {throw new Error('refillRate must be a positive number');}
 
   let tokens = capacity;
   let lastRefill = Date.now();
@@ -41,7 +41,7 @@ function createTokenBucket({ capacity, refillRate, refillInterval = 1000 }) {
      * @returns {boolean} True if tokens were available and consumed
      */
     consume(count = 1) {
-      if (count < 0) throw new Error('count must be non-negative');
+      if (count < 0) {throw new Error('count must be non-negative');}
       _refill();
       if (tokens >= count) {
         tokens -= count;
@@ -79,8 +79,8 @@ function createTokenBucket({ capacity, refillRate, refillInterval = 1000 }) {
  * @returns {{ hit: Function, status: Function, reset: Function }}
  */
 function createSlidingWindow({ limit, windowMs }) {
-  if (limit == null || limit < 0) throw new Error('limit must be a non-negative number');
-  if (!windowMs || windowMs <= 0) throw new Error('windowMs must be a positive number');
+  if (limit === null || limit < 0) {throw new Error('limit must be a non-negative number');}
+  if (!windowMs || windowMs <= 0) {throw new Error('windowMs must be a positive number');}
 
   // Map of key -> array of timestamps
   const windows = new Map();
@@ -158,8 +158,8 @@ function createSlidingWindow({ limit, windowMs }) {
  * @returns {{ hit: Function, status: Function, reset: Function }}
  */
 function createFixedWindow({ limit, windowMs }) {
-  if (limit == null || limit < 0) throw new Error('limit must be a non-negative number');
-  if (!windowMs || windowMs <= 0) throw new Error('windowMs must be a positive number');
+  if (limit === null || limit < 0) {throw new Error('limit must be a non-negative number');}
+  if (!windowMs || windowMs <= 0) {throw new Error('windowMs must be a positive number');}
 
   // Map of key -> { count, windowStart }
   const windows = new Map();
@@ -185,7 +185,7 @@ function createFixedWindow({ limit, windowMs }) {
     hit(key) {
       const w = _getWindow(key);
       const allowed = w.count < limit;
-      if (allowed) w.count++;
+      if (allowed) {w.count++;}
       return {
         allowed,
         remaining: Math.max(0, limit - w.count),

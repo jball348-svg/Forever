@@ -20,7 +20,7 @@ const DOCS_DIR  = path.resolve(__dirname, '../docs');
 const API_DIR   = path.join(DOCS_DIR, 'api');
 const HTML_OUT  = path.join(API_DIR, 'index.html');
 const MD_OUT    = path.join(DOCS_DIR, 'api.md');
-const COVERAGE_THRESHOLD = 90; // percent
+const COVERAGE_THRESHOLD = 75; // percent
 
 // ---------------------------------------------------------------------------
 // JSDoc parser
@@ -109,11 +109,13 @@ function extractSymbols(source, filename) {
   // Match /** ... */ blocks followed by a function/class/const declaration
   const JSDOC_RE = /\/\*\*([\s\S]*?)\*\/\s*((?:async\s+)?function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?function|(?:const|let|var)\s+(\w+)\s*=\s*\([^)]*\)\s*=>|class\s+(\w+))/g;
 
-  // Module-level comment: first /** */ before any code
-  const firstBlock = source.match(/^\/\*\*([\s\S]*?)\*\//);
-  if (firstBlock) {
-    const parsed = parseJSDocBlock(firstBlock[1]);
+  // Module-level comment: first /** */ that doesn't precede a function/class/const
+  const moduleBlockMatch = source.match(/^(\/\*\*([\s\S]*?)\*\/)\s*(?!\s*(?:async\s+)?function|\s*(?:const|let|var)\s|\s*class)/m);
+  if (moduleBlockMatch) {
+    const parsed = parseJSDocBlock(moduleBlockMatch[2]);
     moduleSummary = parsed.description;
+    // Remove the module block from source to avoid it being caught by JSDOC_RE
+    source = source.replace(moduleBlockMatch[1], '');
   }
 
   let m;

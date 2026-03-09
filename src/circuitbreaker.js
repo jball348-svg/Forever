@@ -61,7 +61,7 @@ function createCircuitBreaker(fn, options = {}) {
   function _open(err) {
     state = STATES.OPEN;
     openedAt = Date.now();
-    if (typeof onOpen === 'function') onOpen(err);
+    if (typeof onOpen === 'function') {onOpen(err);}
   }
 
   function _close() {
@@ -69,13 +69,13 @@ function createCircuitBreaker(fn, options = {}) {
     failures = 0;
     successes = 0;
     openedAt = null;
-    if (typeof onClose === 'function') onClose();
+    if (typeof onClose === 'function') {onClose();}
   }
 
   function _halfOpen() {
     state = STATES.HALF_OPEN;
     successes = 0;
-    if (typeof onHalfOpen === 'function') onHalfOpen();
+    if (typeof onHalfOpen === 'function') {onHalfOpen();}
   }
 
   function _tryHalfOpen() {

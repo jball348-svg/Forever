@@ -37,7 +37,7 @@ function _isExpired(entry) {
  */
 function get(key) {
   const entry = _store.get(key);
-  if (!entry) return undefined;
+  if (!entry) {return undefined;}
   if (_isExpired(entry)) { _store.delete(key); return undefined; }
   return entry.value;
 }

@@ -22,7 +22,7 @@ function navigate(path) {
       return route.handler(params);
     }
   }
-  if (_notFound) return _notFound(path);
+  if (_notFound) {return _notFound(path);}
   return null;
 }
 

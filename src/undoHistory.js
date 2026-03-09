@@ -45,11 +45,11 @@ function createUndoHistory(options = {}) {
      * @returns {any|undefined}
      */
     undo() {
-      if (past.length < 2) return undefined;
+      if (past.length < 2) {return undefined;}
       const current = past.pop();
       future.unshift(current);
       const prev = past[past.length - 1];
-      if (typeof onUndo === 'function') onUndo(prev);
+      if (typeof onUndo === 'function') {onUndo(prev);}
       return prev;
     },
 
@@ -59,11 +59,11 @@ function createUndoHistory(options = {}) {
      * @returns {any|undefined}
      */
     redo() {
-      if (future.length === 0) return undefined;
+      if (future.length === 0) {return undefined;}
       const next = future.shift();
       past.push(next);
-      if (past.length > limit) past.shift();
-      if (typeof onRedo === 'function') onRedo(next);
+      if (past.length > limit) {past.shift();}
+      if (typeof onRedo === 'function') {onRedo(next);}
       return next;
     },
 

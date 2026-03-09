@@ -11,7 +11,7 @@ function createMiddleware() {
   async function run(ctx) {
     let index = 0;
     async function next() {
-      if (index >= stack.length) return;
+      if (index >= stack.length) {return;}
       const fn = stack[index++];
       await fn(ctx, next);
     }

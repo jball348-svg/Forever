@@ -32,7 +32,7 @@ const DEFAULTS = Object.freeze({
     format: 'text',   // text | json
   },
   cache: {
-    defaultTtlMs: 60_000,
+    defaultTtlMs: 60000,
     maxSize:      1000,
   },
   retry: {
@@ -72,7 +72,7 @@ function deepMerge(target, source) {
       typeof source[key] === 'object' &&
       !Array.isArray(source[key])
     ) {
-      if (typeof target[key] !== 'object' || target[key] === null) target[key] = {};
+      if (typeof target[key] !== 'object' || target[key] === null) {target[key] = {};}
       deepMerge(target[key], source[key]);
     } else {
       target[key] = source[key];
@@ -94,7 +94,7 @@ function dotGet(obj, dotKey) {
   const parts = dotKey.split('.');
   let cur = obj;
   for (const part of parts) {
-    if (cur === undefined || cur === null) return undefined;
+    if (cur === undefined || cur === null) {return undefined;}
     cur = cur[part];
   }
   return cur;
@@ -130,7 +130,7 @@ function parseEnvVars() {
   const result = {};
   const prefix = 'FOREVER_';
   for (const [key, val] of Object.entries(process.env)) {
-    if (!key.startsWith(prefix)) continue;
+    if (!key.startsWith(prefix)) {continue;}
     // Convert FOREVER_LOG_LEVEL -> log.level
     const parts = key.slice(prefix.length).toLowerCase().split('_');
     const dotKey = parts.join('.');
@@ -148,7 +148,7 @@ function parseEnvVars() {
  */
 function loadRcFile() {
   const rcPath = path.resolve(process.cwd(), '.foreverrc.json');
-  if (!fs.existsSync(rcPath)) return {};
+  if (!fs.existsSync(rcPath)) {return {};}
   try {
     return JSON.parse(fs.readFileSync(rcPath, 'utf8'));
   } catch (_) {
@@ -165,7 +165,7 @@ function loadRcFile() {
  */
 function maskSensitive(obj) {
   const SENSITIVE = /password|secret|token/i;
-  if (typeof obj !== 'object' || obj === null) return obj;
+  if (typeof obj !== 'object' || obj === null) {return obj;}
   const out = {};
   for (const [k, v] of Object.entries(obj)) {
     if (SENSITIVE.test(k)) {
@@ -265,9 +265,9 @@ function validate(schema) {
     }
     if (typeof value === 'number') {
       if (rules.min !== undefined && value < rules.min)
-        errors.push(`'${key}' must be >= ${rules.min}, got ${value}.`);
+        {errors.push(`'${key}' must be >= ${rules.min}, got ${value}.`);}
       if (rules.max !== undefined && value > rules.max)
-        errors.push(`'${key}' must be <= ${rules.max}, got ${value}.`);
+        {errors.push(`'${key}' must be <= ${rules.max}, got ${value}.`);}
     }
     if (rules.enum && !rules.enum.includes(value)) {
       errors.push(`'${key}' must be one of [${rules.enum.join(', ')}], got '${value}'.`);
@@ -290,7 +290,7 @@ function validate(schema) {
  * unsub(); // stop watching
  */
 function watch(key, callback) {
-  if (!_watchers.has(key)) _watchers.set(key, new Set());
+  if (!_watchers.has(key)) {_watchers.set(key, new Set());}
   _watchers.get(key).add(callback);
   return () => _watchers.get(key).delete(callback);
 }
@@ -304,7 +304,7 @@ function watch(key, callback) {
  * @private
  */
 function _notifyWatchers(key, newValue, oldValue) {
-  if (!_watchers.has(key)) return;
+  if (!_watchers.has(key)) {return;}
   for (const cb of _watchers.get(key)) {
     try { cb(newValue, oldValue); } catch (_) { /* non-fatal */ }
   }

@@ -6,19 +6,16 @@ function createPool(factory, options = {}) {
   const idle = [];
   const waiters = [];
   let totalCreated = 0;
-  let inUse = 0;
 
   return {
     acquire() {
       // Return idle object if available
       if (idle.length > 0) {
-        inUse++;
         return Promise.resolve(idle.shift());
       }
       // Create new if under max
       if (totalCreated < max) {
         totalCreated++;
-        inUse++;
         return Promise.resolve(factory());
       }
       // Otherwise queue the waiter
@@ -26,9 +23,7 @@ function createPool(factory, options = {}) {
     },
 
     release(obj) {
-      inUse--;
       if (waiters.length > 0) {
-        inUse++;
         const resolve = waiters.shift();
         resolve(obj);
       } else {

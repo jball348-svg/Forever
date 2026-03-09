@@ -16,8 +16,8 @@ const checks = new Map();
  * @param {Function} fn - Async function that returns { ok: boolean, message: string }
  */
 function register(name, fn) {
-  if (typeof name !== 'string') throw new TypeError('Health check name must be a string');
-  if (typeof fn !== 'function') throw new TypeError('Health check function must be a function');
+  if (typeof name !== 'string') {throw new TypeError('Health check name must be a string');}
+  if (typeof fn !== 'function') {throw new TypeError('Health check function must be a function');}
   checks.set(name, fn);
 }
 
@@ -62,9 +62,9 @@ async function check() {
   const totalCount = results.length;
   
   let status;
-  if (failingCount === 0) status = 'ok';
-  else if (failingCount < totalCount) status = 'degraded';
-  else status = 'failing';
+  if (failingCount === 0) {status = 'ok';}
+  else if (failingCount < totalCount) {status = 'degraded';}
+  else {status = 'failing';}
   
   return {
     status,

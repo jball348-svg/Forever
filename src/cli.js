@@ -71,7 +71,7 @@ function ok(msg) {
  */
 function fail(msg, code = 1) {
   process.stderr.write(`${colour('red', '✖')} ${msg}\n`);
-  if (code !== 0) process.exit(code);
+  if (code !== 0) {process.exit(code);}
 }
 
 /**
@@ -110,11 +110,11 @@ function listModules() {
  */
 function getModuleSummary(moduleName) {
   const filePath = path.join(SRC_DIR, `${moduleName}.js`);
-  if (!fs.existsSync(filePath)) return '';
+  if (!fs.existsSync(filePath)) {return '';}
   const src = fs.readFileSync(filePath, 'utf8');
   // First /** ... */ block
   const m = src.match(/\/\*\*[\s\S]*?\*\//);
-  if (!m) return '';
+  if (!m) {return '';}
   // Strip * prefixes and collect non-tag lines
   const lines = m[0].split('\n')
     .map(l => l.replace(/^\s*\/?\/?\*+\/?\s?/, '').trim())
@@ -131,10 +131,10 @@ function getModuleSummary(moduleName) {
  */
 function getExports(moduleName) {
   const filePath = path.join(SRC_DIR, `${moduleName}.js`);
-  if (!fs.existsSync(filePath)) return [];
+  if (!fs.existsSync(filePath)) {return [];}
   const src = fs.readFileSync(filePath, 'utf8');
   const m = src.match(/module\.exports\s*=\s*\{([^}]+)\}/);
-  if (m) return m[1].split(',').map(e => e.trim().split(':')[0].trim()).filter(Boolean);
+  if (m) {return m[1].split(',').map(e => e.trim().split(':')[0].trim()).filter(Boolean);}
   const m2 = src.match(/module\.exports\s*=\s*(\w+)/);
   return m2 ? [m2[1]] : [];
 }
@@ -147,7 +147,7 @@ function getExports(moduleName) {
  */
 function getModuleAPI(moduleName) {
   const filePath = path.join(SRC_DIR, `${moduleName}.js`);
-  if (!fs.existsSync(filePath)) return [];
+  if (!fs.existsSync(filePath)) {return [];}
   const src = fs.readFileSync(filePath, 'utf8');
   const results = [];
 
@@ -165,7 +165,7 @@ function getModuleAPI(moduleName) {
     for (const line of lines) {
       if (line.startsWith('@param')) {
         const pm = line.match(/@param\s+(?:\{([^}]*)\}\s+)?(\S+)(?:\s+(.*))?/);
-        if (pm) params.push(`${pm[2]}: ${pm[1] || '*'}`);
+        if (pm) {params.push(`${pm[2]}: ${pm[1] || '*'}`);}
       } else if (line.startsWith('@returns') || line.startsWith('@return')) {
         const rm = line.match(/@returns?\s+(?:\{([^}]*)\})?/);
         returns = rm ? rm[1] || '*' : '*';

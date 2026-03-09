@@ -202,7 +202,7 @@ async function runTests() {
 
   console.log(`\n${'='.repeat(30)}`);
   console.log(`Results: ${passed} passed, ${failed} failed`);
-  if (failed > 0) process.exit(1);
+  if (failed > 0) {process.exit(1);}
 }
 
 runTests().catch(err => {

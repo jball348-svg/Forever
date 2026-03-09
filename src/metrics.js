@@ -3,8 +3,6 @@
  * Provides Prometheus-style metrics collection with counters, gauges, histograms, and timers.
  */
 
-const v8 = require('v8');
-
 // Internal storage for all metrics
 const metrics = new Map();
 
@@ -174,7 +172,7 @@ class Histogram extends BaseMetric {
         count: bucketCounts[index]
       })),
       count: bucketCounts[bucketCounts.length - 1],
-      sum: sum
+      sum
     };
   }
   
@@ -216,8 +214,8 @@ class Histogram extends BaseMetric {
  * Timer metric - convenience wrapper around histogram for timing
  */
 class Timer {
-  constructor(histogram, labelValues = {}) {
-    this.histogram = histogram;
+  constructor(histogramMetric, labelValues = {}) {
+    this.histogram = histogramMetric;
     this.labelValues = labelValues;
     this.start = process.hrtime.bigint();
   }
@@ -304,8 +302,8 @@ function exportJSON() {
 /**
  * Parse label key back to object
  */
-function parseLabelKey(key, labels) {
-  if (key === '{}') return {};
+function parseLabelKey(key) {
+  if (key === '{}') {return {};}
   
   const result = {};
   const pairs = key.split(',');

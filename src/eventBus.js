@@ -13,7 +13,7 @@ const listeners = {};
  * eventBus.on('user:login', (data) => console.log('Logged in:', data.userId));
  */
 function on(event, handler) {
-  if (!listeners[event]) listeners[event] = [];
+  if (!listeners[event]) {listeners[event] = [];}
   listeners[event].push(handler);
 }
 
@@ -24,7 +24,7 @@ function on(event, handler) {
  * @param {Function} handler - The handler to remove
  */
 function off(event, handler) {
-  if (!listeners[event]) return;
+  if (!listeners[event]) {return;}
   listeners[event] = listeners[event].filter(h => h !== handler);
 }
 
@@ -37,7 +37,7 @@ function off(event, handler) {
  * eventBus.emit('user:login', { userId: 123 });
  */
 function emit(event, data) {
-  if (!listeners[event]) return;
+  if (!listeners[event]) {return;}
   listeners[event].forEach(h => h(data));
 }
 

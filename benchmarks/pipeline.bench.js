@@ -18,14 +18,14 @@ async function run() {
   // Small pipeline (3 stages)
   results.push(await benchmark('pipeline.3 stages (sync)', () => {
     const pipe = pipeline(double, addOne, square);
-    for (let i = 0; i < 1000; i++) pipe(i);
+    for (let i = 0; i < 1000; i++) {pipe(i);}
   }, { iterations: 200 }));
 
   // Larger pipeline (10 stages)
   const fns = Array.from({ length: 10 }, () => (x => x + 1));
   results.push(await benchmark('pipeline.10 stages (sync)', () => {
     const pipe = pipeline(...fns);
-    for (let i = 0; i < 1000; i++) pipe(i);
+    for (let i = 0; i < 1000; i++) {pipe(i);}
   }, { iterations: 200 }));
 
   return results;

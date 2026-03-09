@@ -46,7 +46,7 @@ test('returns default log.level', () => {
 
 test('returns default cache.defaultTtlMs', () => {
   config.reset();
-  assert.strictEqual(config.get('cache.defaultTtlMs'), 60_000);
+  assert.strictEqual(config.get('cache.defaultTtlMs'), 60000);
 });
 
 test('returns defaultValue for missing key', () => {
@@ -289,4 +289,4 @@ test('toJSON does not mutate internal store', () => {
 // Summary
 // ---------------------------------------------------------------------------
 console.log(`\n\ud83d\udcca Results: ${passed} passed, ${failed} failed\n`);
-if (failed > 0) process.exit(1);
+if (failed > 0) {process.exit(1);}

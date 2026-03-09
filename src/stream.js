@@ -29,8 +29,8 @@ function createStream() {
     end() {
       ended = true;
       // Resolve any pending readers with undefined
-      while (waiters.length > 0) waiters.shift()(undefined);
-      if (typeof _onEnd === 'function') _onEnd();
+      while (waiters.length > 0) {waiters.shift()(undefined);}
+      if (typeof _onEnd === 'function') {_onEnd();}
     },
 
     get ended() { return ended; },

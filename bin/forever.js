@@ -30,7 +30,7 @@ const PKG = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'package.js
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function exit(code, msg) {
-  if (msg) (code === 0 ? process.stdout : process.stderr).write(msg + '\n');
+  if (msg) {(code === 0 ? process.stdout : process.stderr).write(msg + '\n');}
   process.exit(code);
 }
 
@@ -183,12 +183,12 @@ Display current metrics in a formatted table or JSON.
 // ─── Commands ──────────────────────────────────────────────────────────────────
 
 function cmdRun(positional, flags) {
-  if (flags.help) exit(0, HELP_RUN);
+  if (flags.help) {exit(0, HELP_RUN);}
   const modName = positional[0];
-  if (!modName) fail('Usage: forever run <module>');
+  if (!modName) {fail('Usage: forever run <module>');}
 
   const modPath = path.resolve(__dirname, '..', 'src', `${modName}.js`);
-  if (!fs.existsSync(modPath)) fail(`Module '${modName}' not found in src/`);
+  if (!fs.existsSync(modPath)) {fail(`Module '${modName}' not found in src/`);}
 
   printHeader(`Module: ${modName}`);
   const mod = require(modPath);
@@ -219,7 +219,7 @@ function cmdRun(positional, flags) {
 }
 
 function cmdList(flags) {
-  if (flags.help) exit(0, HELP_LIST);
+  if (flags.help) {exit(0, HELP_LIST);}
 
   printHeader('Available Modules');
   const modules = cli.listModules();
@@ -234,7 +234,7 @@ function cmdList(flags) {
 }
 
 function cmdTest(flags) {
-  if (flags.help) exit(0, HELP_TEST);
+  if (flags.help) {exit(0, HELP_TEST);}
 
   printHeader('Running Tests');
   const { results, total, passed, failed } = cli.runAllTests();
@@ -261,31 +261,31 @@ function cmdTest(flags) {
 }
 
 function cmdDocs(flags) {
-  if (flags.help) exit(0, HELP_DOCS);
+  if (flags.help) {exit(0, HELP_DOCS);}
 
   printHeader('Generating Documentation');
   const scriptPath = path.resolve(__dirname, '..', 'scripts', 'generate-docs.js');
-  if (!fs.existsSync(scriptPath)) fail('scripts/generate-docs.js not found.');
+  if (!fs.existsSync(scriptPath)) {fail('scripts/generate-docs.js not found.');}
 
   const args = flags.watch ? ['--watch'] : [];
   const result = spawnSync(process.execPath, [scriptPath, ...args], {
     stdio: 'inherit'
   });
-  if (result.status !== 0) process.exit(result.status || 1);
+  if (result.status !== 0) {process.exit(result.status || 1);}
 }
 
 function cmdInfo(positional, flags) {
-  if (flags.help) exit(0, HELP_INFO);
+  if (flags.help) {exit(0, HELP_INFO);}
   const modName = positional[0];
-  if (!modName) fail('Usage: forever info <module>');
+  if (!modName) {fail('Usage: forever info <module>');}
 
   const modPath = path.resolve(__dirname, '..', 'src', `${modName}.js`);
-  if (!fs.existsSync(modPath)) fail(`Module '${modName}' not found in src/`);
+  if (!fs.existsSync(modPath)) {fail(`Module '${modName}' not found in src/`);}
 
   printHeader(`API: ${modName}`);
 
   const summary = cli.getModuleSummary(modName);
-  if (summary) process.stdout.write(`${colour('dim', summary)}\n\n`);
+  if (summary) {process.stdout.write(`${colour('dim', summary)}\n\n`);}
 
   const exports = cli.getExports(modName);
   process.stdout.write(`${colour('yellow', 'Exports:')} ${exports.map(e => colour('cyan', e)).join(', ')}\n\n`);
@@ -299,16 +299,16 @@ function cmdInfo(positional, flags) {
   for (const fn of api) {
     const sig = `${colour('green', fn.name)}(${colour('cyan', fn.params || '')})${fn.returns ? ` → ${colour('yellow', fn.returns)}` : ''}`;
     process.stdout.write(`  ${sig}\n`);
-    if (fn.description) process.stdout.write(`  ${colour('dim', fn.description)}\n`);
+    if (fn.description) {process.stdout.write(`  ${colour('dim', fn.description)}\n`);}
     process.stdout.write('\n');
   }
 }
 
 async function cmdBenchmark(flags) {
-  if (flags.help) exit(0, HELP_BENCHMARK);
+  if (flags.help) {exit(0, HELP_BENCHMARK);}
 
   const format = flags.format || 'table';
-  if (!['table', 'json'].includes(format)) fail(`--format must be 'table' or 'json'.`);
+  if (!['table', 'json'].includes(format)) {fail(`--format must be 'table' or 'json'.`);}
 
   printHeader('Benchmark Suite');
   const benchDir = path.resolve(__dirname, '..', 'benchmarks');
@@ -351,12 +351,12 @@ async function cmdBenchmark(flags) {
 }
 
 async function cmdValidate(flags) {
-  if (flags.help) exit(0, HELP_VALIDATE);
+  if (flags.help) {exit(0, HELP_VALIDATE);}
 
   let raw;
   if (flags.file) {
     const filePath = path.resolve(process.cwd(), flags.file);
-    if (!fs.existsSync(filePath)) fail(`File not found: ${filePath}`);
+    if (!fs.existsSync(filePath)) {fail(`File not found: ${filePath}`);}
     raw = fs.readFileSync(filePath, 'utf8');
   } else {
     raw = await readStdin();
@@ -372,7 +372,7 @@ async function cmdValidate(flags) {
   }
 
   const schemaPath = path.resolve(process.cwd(), flags.schema);
-  if (!fs.existsSync(schemaPath)) fail(`Schema file not found: ${schemaPath}`);
+  if (!fs.existsSync(schemaPath)) {fail(`Schema file not found: ${schemaPath}`);}
 
   let schema;
   try { schema = JSON.parse(fs.readFileSync(schemaPath, 'utf8')); }
@@ -385,20 +385,20 @@ async function cmdValidate(flags) {
       errors.push(`"${field}" is required but missing.`); continue;
     }
     if (value !== undefined && rules.type && typeof value !== rules.type)
-      errors.push(`"${field}" must be ${rules.type}, got ${typeof value}.`);
+      {errors.push(`"${field}" must be ${rules.type}, got ${typeof value}.`);}
     if (typeof value === 'number') {
-      if (rules.min !== undefined && value < rules.min) errors.push(`"${field}" must be >= ${rules.min}.`);
-      if (rules.max !== undefined && value > rules.max) errors.push(`"${field}" must be <= ${rules.max}.`);
+      if (rules.min !== undefined && value < rules.min) {errors.push(`"${field}" must be >= ${rules.min}.`);}
+      if (rules.max !== undefined && value > rules.max) {errors.push(`"${field}" must be <= ${rules.max}.`);}
     }
   }
 
   const result = { valid: errors.length === 0, errors };
   process.stdout.write(JSON.stringify(result, null, 2) + '\n');
-  if (!result.valid) process.exit(1);
+  if (!result.valid) {process.exit(1);}
 }
 
 function cmdPlugin(positional, flags) {
-  if (flags.help || positional.length === 0) exit(0, HELP_PLUGIN);
+  if (flags.help || positional.length === 0) {exit(0, HELP_PLUGIN);}
   const sub = positional[0];
   if (sub === 'list') {
     printHeader('Built-in Plugins');
@@ -416,10 +416,10 @@ function cmdPlugin(positional, flags) {
 }
 
 async function cmdHealth(flags) {
-  if (flags.help) exit(0, HELP_HEALTH);
+  if (flags.help) {exit(0, HELP_HEALTH);}
 
   const format = flags.format || 'text';
-  if (!['text', 'json'].includes(format)) fail(`--format must be 'text' or 'json'.`);
+  if (!['text', 'json'].includes(format)) {fail(`--format must be 'text' or 'json'.`);}
 
   printHeader('Health Check Report');
   
@@ -481,10 +481,10 @@ async function cmdHealth(flags) {
 }
 
 async function cmdMetrics(flags) {
-  if (flags.help) exit(0, HELP_METRICS);
+  if (flags.help) {exit(0, HELP_METRICS);}
 
   const format = flags.format || 'table';
-  if (!['table', 'json'].includes(format)) fail(`--format must be 'table' or 'json'.`);
+  if (!['table', 'json'].includes(format)) {fail(`--format must be 'table' or 'json'.`);}
 
   printHeader('Metrics Report');
   
@@ -602,7 +602,7 @@ async function main() {
     process.exit(0);
   }
 
-  if (!command || flags.help) exit(0, HELP_ROOT);
+  if (!command || flags.help) {exit(0, HELP_ROOT);}
 
   switch (command) {
     case 'run':       cmdRun(positional.slice(1), flags); break;

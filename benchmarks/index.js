@@ -55,7 +55,7 @@ async function runAll() {
 
   // Write reports to benchmarks/reports/
   const reportsDir = path.join(__dirname, 'reports');
-  if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true });
+  if (!fs.existsSync(reportsDir)) {fs.mkdirSync(reportsDir, { recursive: true });}
 
   fs.writeFileSync(path.join(reportsDir, 'results.json'), exportJSON());
   fs.writeFileSync(path.join(reportsDir, 'results.csv'),  exportCSV());

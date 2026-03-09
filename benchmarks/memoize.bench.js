@@ -9,7 +9,7 @@ const { memoize }   = require('../src/memoize');
 const NAME = 'Memoize';
 
 function expensiveFib(n) {
-  if (n <= 1) return n;
+  if (n <= 1) {return n;}
   return expensiveFib(n - 1) + expensiveFib(n - 2);
 }
 

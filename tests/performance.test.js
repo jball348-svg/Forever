@@ -38,7 +38,7 @@ describe('measureSync', () => {
   test('captures non-trivial durations for slow work', () => {
     const { duration } = measureSync(() => {
       let x = 0;
-      for (let i = 0; i < 1e6; i++) x += i;
+      for (let i = 0; i < 1e6; i++) {x += i;}
       return x;
     });
     expect(duration).toBeGreaterThan(0);
@@ -166,7 +166,7 @@ describe('setBaseline', () => {
     const fn = monitor('fast-fn', () => {
       // deliberately slow
       let x = 0;
-      for (let i = 0; i < 1e5; i++) x += i;
+      for (let i = 0; i < 1e5; i++) {x += i;}
     });
     // Should not throw even when baseline is exceeded
     await expect(fn()).resolves.toBeUndefined();

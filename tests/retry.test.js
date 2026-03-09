@@ -10,7 +10,7 @@ async function runTests() {
   let calls = 0;
   const flakey = async () => {
     calls++;
-    if (calls < 3) throw new Error('not yet');
+    if (calls < 3) {throw new Error('not yet');}
     return 'eventually';
   };
   const r2 = await retry(flakey, { attempts: 5, delayMs: 10 });

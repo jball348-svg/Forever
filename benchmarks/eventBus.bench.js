@@ -15,14 +15,14 @@ async function run() {
   results.push(await benchmark('eventBus.emit (1 listener)', () => {
     const bus = createEventBus();
     bus.on('evt', () => {});
-    for (let i = 0; i < 1000; i++) bus.emit('evt', i);
+    for (let i = 0; i < 1000; i++) {bus.emit('evt', i);}
   }, { iterations: 100 }));
 
   // Publish with many listeners
   results.push(await benchmark('eventBus.emit (50 listeners)', () => {
     const bus = createEventBus();
-    for (let i = 0; i < 50; i++) bus.on('evt', () => {});
-    for (let i = 0; i < 1000; i++) bus.emit('evt', i);
+    for (let i = 0; i < 50; i++) {bus.on('evt', () => {});}
+    for (let i = 0; i < 1000; i++) {bus.emit('evt', i);}
   }, { iterations: 100 }));
 
   // Subscribe / unsubscribe churn
@@ -30,7 +30,7 @@ async function run() {
     const bus = createEventBus();
     for (let i = 0; i < 500; i++) {
       const off = bus.on('evt', () => {});
-      if (typeof off === 'function') off();
+      if (typeof off === 'function') {off();}
     }
   }, { iterations: 200 }));
 

@@ -5,9 +5,6 @@
  */
 
 const assert = require('assert');
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
 
 // We import individual functions from generate-docs so we can test without side-effects
 const {
@@ -221,4 +218,4 @@ test('generateMD includes function headings', () => {
 // Summary
 // ---------------------------------------------------------------------------
 console.log(`\n📊 Results: ${passed} passed, ${failed} failed\n`);
-if (failed > 0) process.exit(1);
+if (failed > 0) {process.exit(1);}

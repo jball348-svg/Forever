@@ -26,13 +26,25 @@
     "branches": 70,
     "statements": 80,
     "src": "src",
-    "include": ["src/**/*.js"],
-    "exclude": ["**/*.test.js", "coverage/**", "scripts/**"],
-    "reporter": ["html", "json", "text", "lcov"],
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "**/*.test.js",
+      "coverage/**",
+      "scripts/**"
+    ],
+    "reporter": [
+      "html",
+      "json",
+      "text",
+      "lcov"
+    ],
     "reports-dir": "coverage"
   },
   "devDependencies": {
     "c8": "^11.0.0",
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.1",
+    "typescript": "^5.9.3"
   }
 }

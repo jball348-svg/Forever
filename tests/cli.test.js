@@ -5,9 +5,7 @@
  */
 
 const assert = require('assert');
-const path = require('path');
-const fs = require('fs');
-
+const { execSync } = require('child_process');
 const cli = require('../src/cli.js');
 
 let passed = 0;
@@ -193,4 +191,4 @@ test('each result entry has file, passed, durationMs fields', () => {
 // Summary
 // ---------------------------------------------------------------------------
 console.log(`\n📊 Results: ${passed} passed, ${failed} failed\n`);
-if (failed > 0) process.exit(1);
+if (failed > 0) {process.exit(1);}

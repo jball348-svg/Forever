@@ -3,7 +3,7 @@
  * for the Forever library. Uses Node.js built-in `perf_hooks`.
  */
 
-const { performance, PerformanceObserver } = require('perf_hooks');
+const { performance } = require('perf_hooks');
 
 // ─── Baseline registry (used for regression detection) ───────────────────────
 const _baselines = new Map();
@@ -89,7 +89,7 @@ function monitor(name, fn) {
     _history.push(entry);
     _checkRegression(name, duration);
 
-    if (error) throw error;
+    if (error) {throw error;}
     return result;
   };
 }
@@ -109,10 +109,10 @@ function monitor(name, fn) {
 async function benchmark(name, fn, opts = {}) {
   const { iterations = 100, warmup = true } = opts;
 
-  if (warmup) await fn(); // warm JIT
+  if (warmup) {await fn();} // warm JIT
 
   const times = [];
-  let memStart = memorySnapshot();
+  const memStart = memorySnapshot();
 
   for (let i = 0; i < iterations; i++) {
     const t0 = performance.now();
@@ -168,7 +168,7 @@ function setBaseline(name, durationMs) {
  * @private
  */
 function _checkRegression(name, duration) {
-  if (!_baselines.has(name)) return;
+  if (!_baselines.has(name)) {return;}
   const baseline = _baselines.get(name);
   if (duration > baseline * 1.2) {
     // 20% tolerance
@@ -195,7 +195,7 @@ async function detectMemoryLeak(fn, opts = {}) {
   const { iterations = 50, thresholdBytes = 1024 * 1024 } = opts;
 
   // Give GC a chance before starting
-  if (global.gc) global.gc();
+  if (global.gc) {global.gc();}
 
   const snapshots = [];
   for (let i = 0; i < iterations; i++) {

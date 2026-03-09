@@ -90,7 +90,7 @@ function createLogger(options = {}) {
   let currentLevel = initialLevel;
 
   function _write(level, msg, fields) {
-    if (LEVELS[level] < LEVELS[currentLevel]) return;
+    if (LEVELS[level] < LEVELS[currentLevel]) {return;}
     const entry = _buildEntry(level, msg, context, fields, name);
     let line;
     if (formatter === 'pretty') {

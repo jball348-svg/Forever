@@ -43,7 +43,7 @@ function createKVStore(options = {}) {
   function _evictEntry(key, entry) {
     store.delete(key);
     evictions++;
-    if (typeof onEvict === 'function') onEvict(key, entry.value);
+    if (typeof onEvict === 'function') {onEvict(key, entry.value);}
   }
 
   function _evictLRU() {
@@ -66,7 +66,7 @@ function createKVStore(options = {}) {
   function _startSweep() {
     if (sweepTimer === null && maxSize !== 0) {
       sweepTimer = setInterval(_sweep, SWEEP_INTERVAL_MS);
-      if (sweepTimer.unref) sweepTimer.unref(); // don't block process exit
+      if (sweepTimer.unref) {sweepTimer.unref();} // don't block process exit
     }
   }
 
@@ -130,7 +130,7 @@ function createKVStore(options = {}) {
      */
     has(key) {
       const entry = store.get(key);
-      if (!entry) return false;
+      if (!entry) {return false;}
       if (_isExpired(entry)) {
         _evictEntry(key, entry);
         return false;
@@ -203,9 +203,9 @@ function createKVStore(options = {}) {
      */
     ttl(key) {
       const entry = store.get(key);
-      if (!entry) return undefined;
+      if (!entry) {return undefined;}
       if (_isExpired(entry)) { _evictEntry(key, entry); return undefined; }
-      if (entry.expiresAt === null) return Infinity;
+      if (entry.expiresAt === null) {return Infinity;}
       return Math.max(0, entry.expiresAt - Date.now());
     },
 

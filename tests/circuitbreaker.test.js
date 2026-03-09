@@ -65,7 +65,7 @@ async function runTests() {
     let calls = 0;
     const flaky = async () => {
       calls++;
-      if (calls <= 2) throw new Error('fail');
+      if (calls <= 2) {throw new Error('fail');}
       return 'ok';
     };
     const cb = createCircuitBreaker(flaky, { failureThreshold: 10 });
@@ -126,7 +126,7 @@ async function runTests() {
     let calls = 0;
     const halfOpenFn = async () => {
       calls++;
-      if (calls <= 1) throw new Error('fail'); // force open
+      if (calls <= 1) {throw new Error('fail');} // force open
       return 'ok'; // then succeed
     };
     const cb = createCircuitBreaker(halfOpenFn, {
@@ -145,7 +145,7 @@ async function runTests() {
     let closed = false;
     let calls = 0;
     const fn = async () => {
-      if (calls++ === 0) throw new Error('fail');
+      if (calls++ === 0) {throw new Error('fail');}
       return 'ok';
     };
     const cb = createCircuitBreaker(fn, {
@@ -182,7 +182,7 @@ async function runTests() {
 
   console.log(`\n${'='.repeat(30)}`);
   console.log(`Results: ${passed} passed, ${failed} failed`);
-  if (failed > 0) process.exit(1);
+  if (failed > 0) {process.exit(1);}
 }
 
 runTests().catch(err => {

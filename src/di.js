@@ -17,7 +17,7 @@ function createContainer() {
     },
 
     resolve(name) {
-      if (!factories.has(name)) throw new Error(`No factory registered for '${name}'`);
+      if (!factories.has(name)) {throw new Error(`No factory registered for '${name}'`);}
       if (singletonKeys.has(name)) {
         if (!singletonCache.has(name)) {
           singletonCache.set(name, factories.get(name)(container));

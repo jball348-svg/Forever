@@ -15,9 +15,9 @@
  * @returns {*}
  */
 function deepClone(value) {
-  if (value === null || value === undefined) return value;
-  if (value instanceof Date) return new Date(value.getTime());
-  if (Array.isArray(value)) return value.map(deepClone);
+  if (value === null || value === undefined) {return value;}
+  if (value instanceof Date) {return new Date(value.getTime());}
+  if (Array.isArray(value)) {return value.map(deepClone);}
   if (typeof value === 'object') {
     const clone = Object.create(Object.getPrototypeOf(value));
     for (const key of Object.keys(value)) {
@@ -38,20 +38,20 @@ function deepClone(value) {
  * @returns {boolean}
  */
 function deepEqual(a, b) {
-  if (a === b) return true;
-  if (a === null || b === null) return a === b;
-  if (a === undefined || b === undefined) return a === b;
-  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
-  if (typeof a !== typeof b) return false;
+  if (a === b) {return true;}
+  if (a === null || b === null) {return a === b;}
+  if (a === undefined || b === undefined) {return a === b;}
+  if (a instanceof Date && b instanceof Date) {return a.getTime() === b.getTime();}
+  if (typeof a !== typeof b) {return false;}
   if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return false;
+    if (a.length !== b.length) {return false;}
     return a.every((v, i) => deepEqual(v, b[i]));
   }
-  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a) !== Array.isArray(b)) {return false;}
   if (typeof a === 'object') {
     const keysA = Object.keys(a).sort();
     const keysB = Object.keys(b).sort();
-    if (!deepEqual(keysA, keysB)) return false;
+    if (!deepEqual(keysA, keysB)) {return false;}
     return keysA.every(k => deepEqual(a[k], b[k]));
   }
   return false;
@@ -67,7 +67,7 @@ function deepEqual(a, b) {
 function deepMerge(...sources) {
   const result = {};
   for (const source of sources) {
-    if (!source || typeof source !== 'object' || Array.isArray(source)) continue;
+    if (!source || typeof source !== 'object' || Array.isArray(source)) {continue;}
     for (const key of Object.keys(source)) {
       const srcVal = source[key];
       const resVal = result[key];
@@ -107,7 +107,7 @@ function flatten(obj, delimiter = '.', prefix = '') {
       ? current.map((_, i) => String(i))
       : Object.keys(current);
     if (keys.length === 0) {
-      if (parentKey) result[parentKey] = Array.isArray(current) ? [] : {};
+      if (parentKey) {result[parentKey] = Array.isArray(current) ? [] : {};}
       return;
     }
     for (const key of keys) {
@@ -173,7 +173,7 @@ function omit(obj, keys) {
   const excluded = new Set(keys);
   const result = {};
   for (const key of Object.keys(obj)) {
-    if (!excluded.has(key)) result[key] = obj[key];
+    if (!excluded.has(key)) {result[key] = obj[key];}
   }
   return result;
 }
@@ -219,7 +219,7 @@ function groupBy(array, keyFn) {
   const result = {};
   for (const item of array) {
     const key = String(keyFn(item));
-    if (!result[key]) result[key] = [];
+    if (!result[key]) {result[key] = [];}
     result[key].push(item);
   }
   return result;

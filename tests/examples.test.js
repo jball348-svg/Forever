@@ -4,7 +4,7 @@
 
 const {
   cache, store, eventBus, logger, utils,
-  debounce, throttle, memoize, pipeline,
+  debounce, throttle, memoize, memoizeAsync, pipeline,
   decorators, middleware, di, pool, stateManager,
   queue, retry, stream, commandBus, fsm, observable,
   router, scheduler, validator, config, greet
@@ -268,19 +268,19 @@ describe('Documentation Examples Tests', () => {
 
   describe('Pool Example', () => {
     test('should pool objects correctly', async () => {
-      const pool = pool.createPool(() => ({ id: Math.random() }), { max: 2 });
+      const testPool = pool.createPool(() => ({ id: Math.random() }), { max: 2 });
       
-      const obj1 = await pool.acquire();
-      const obj2 = await pool.acquire();
+      const obj1 = await testPool.acquire();
+      const obj2 = await testPool.acquire();
       
       expect(obj1).toBeDefined();
       expect(obj2).toBeDefined();
       expect(obj1).not.toBe(obj2);
       
-      pool.release(obj1);
-      pool.release(obj2);
+      testPool.release(obj1);
+      testPool.release(obj2);
       
-      expect(pool.size()).toBe(2);
+      expect(testPool.size()).toBe(2);
     });
   });
 

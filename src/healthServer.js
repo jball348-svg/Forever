@@ -131,7 +131,7 @@ function start(options = {}) {
       
       serverInstance = {
         server,
-        address: address,
+        address,
         port: address.port,
         host: address.address,
         stop: () => stop()

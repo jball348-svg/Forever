@@ -36,7 +36,7 @@ function createTaskRunner(options = {}) {
     for (const dep of deps) {
       if (!visited.has(dep)) {
         const task = tasks.get(dep);
-        if (task && _hasCycle(dep, task.deps, visited, stack)) return true;
+        if (task && _hasCycle(dep, task.deps, visited, stack)) {return true;}
       } else if (stack.has(dep)) {
         return true;
       }
@@ -61,27 +61,27 @@ function createTaskRunner(options = {}) {
     const result = [];
 
     function visit(n) {
-      if (visited.has(n)) return;
+      if (visited.has(n)) {return;}
       visited.add(n);
       const task = tasks.get(n);
-      if (!task) throw new Error(`Unknown task: '${n}'`);
-      for (const dep of task.deps) visit(dep);
+      if (!task) {throw new Error(`Unknown task: '${n}'`);}
+      for (const dep of task.deps) {visit(dep);}
       result.push(n);
     }
 
-    for (const n of names) visit(n);
+    for (const n of names) {visit(n);}
     return result;
   }
 
   async function _runOne(name, results) {
     const task = tasks.get(name);
-    if (!task) throw new Error(`Unknown task: '${name}'`);
+    if (!task) {throw new Error(`Unknown task: '${name}'`);}
 
-    if (task.status === 'done') return task.result;
-    if (task.status === 'failed') throw task.error;
+    if (task.status === 'done') {return task.result;}
+    if (task.status === 'failed') {throw task.error;}
 
     task.status = 'running';
-    if (typeof onTaskStart === 'function') onTaskStart(name);
+    if (typeof onTaskStart === 'function') {onTaskStart(name);}
 
     // Build dep results
     const depResults = {};
@@ -101,18 +101,18 @@ function createTaskRunner(options = {}) {
 
     task.fn(depResults)
       .then(result => {
-        if (timerHandle) clearTimeout(timerHandle);
+        if (timerHandle) {clearTimeout(timerHandle);}
         task.status = 'done';
         task.result = result;
         results.set(name, result);
-        if (typeof onTaskEnd === 'function') onTaskEnd(name, result);
+        if (typeof onTaskEnd === 'function') {onTaskEnd(name, result);}
         resolve(result);
       })
       .catch(err => {
-        if (timerHandle) clearTimeout(timerHandle);
+        if (timerHandle) {clearTimeout(timerHandle);}
         task.status = 'failed';
         task.error = err;
-        if (typeof onTaskError === 'function') onTaskError(name, err);
+        if (typeof onTaskError === 'function') {onTaskError(name, err);}
         reject(err);
       });
 
@@ -131,7 +131,7 @@ function createTaskRunner(options = {}) {
 
     async function tryLaunch() {
       const launchable = [...pending].filter(name => {
-        if (running.size >= concurrency) return false;
+        if (running.size >= concurrency) {return false;}
         const task = tasks.get(name);
         return task.deps.every(d => done.has(d));
       });
@@ -199,7 +199,7 @@ function createTaskRunner(options = {}) {
      */
     async run(name) {
       if (name !== undefined) {
-        if (!tasks.has(name)) throw new Error(`Unknown task: '${name}'`);
+        if (!tasks.has(name)) {throw new Error(`Unknown task: '${name}'`);}
         return _runAll([name]);
       }
       return _runAll([...tasks.keys()]);

@@ -90,7 +90,7 @@ class PluginManager {
  * @returns {Function}
  */
 function withPlugins(fn, pluginManager, fnName) {
-  if (typeof fn !== 'function') throw new TypeError('fn must be a function.');
+  if (typeof fn !== 'function') {throw new TypeError('fn must be a function.');}
   if (!(pluginManager instanceof PluginManager)) {
     throw new TypeError('pluginManager must be a PluginManager instance.');
   }

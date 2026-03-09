@@ -21,7 +21,7 @@ async function run() {
     let calls = 0;
     await retry(() => {
       calls++;
-      if (calls < 2) return Promise.reject(new Error('fail'));
+      if (calls < 2) {return Promise.reject(new Error('fail'));}
       return Promise.resolve('ok');
     }, { attempts: 3, delay: 0 });
   }, { iterations: 300 }));
