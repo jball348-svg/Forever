@@ -17,7 +17,8 @@
     "changelog": "node scripts/generate-changelog.js",
     "coverage": "node scripts/coverage.js",
     "docs": "node scripts/generate-docs.js",
-    "docs:watch": "node scripts/generate-docs.js --watch"
+    "docs:watch": "node scripts/generate-docs.js --watch",
+    "lint": "eslint src/ bin/ benchmarks/ tests/ --ext .js --max-warnings 20"
   },
   "c8": {
     "lines": 80,
@@ -31,6 +32,7 @@
     "reports-dir": "coverage"
   },
   "devDependencies": {
-    "c8": "^11.0.0"
+    "c8": "^11.0.0",
+    "eslint": "^8.57.0"
   }
 }

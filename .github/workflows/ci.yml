@@ -53,7 +53,7 @@ jobs:
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
       - name: Run ESLint
-        run: npx eslint src/ bin/ benchmarks/ tests/ --ext .js --max-warnings 20
+        run: ./node_modules/.bin/eslint src/ bin/ benchmarks/ tests/ --ext .js --max-warnings 20
 
   # ──────────────────────────────────────────────────────────────────────────
   typecheck:
