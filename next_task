@@ -1,24 +1,29 @@
-Add a `src/hashTable.js` Hash Table data structure module with the following:
+Add a `src/tree.js` General Tree data structure module with the following:
 
-1) `createHashTable(size?)` - factory function with optional initial size (default: 16).
+1) `createTree(value)` - factory function that creates a tree with a root node containing the given value.
 
 2) Returns an object with:
-   - `set(key, value)` - store key-value pair. Returns true if new key, false if updating existing.
-   - `get(key)` - retrieve value for key. Returns undefined if key not found.
-   - `has(key)` - returns true if key exists.
-   - `delete(key)` - remove key-value pair. Returns true if deleted, false if not found.
-   - `clear()` - remove all entries.
-   - `size` (getter) - number of stored entries.
-   - `keys()` - returns array of all keys.
-   - `values()` - returns array of all values.
-   - `entries()` - returns array of [key, value] pairs.
-   - `forEach(callback)` - iterate over entries with callback(value, key, table).
-   - `resize(newSize)` - manually resize the hash table.
+   - `root` - reference to the root node (read-only)
+   - `add(parentValue, childValue)` - add child node to parent with given values. Returns true if added, false if parent not found.
+   - `remove(value)` - remove node and all its descendants. Returns true if removed, false if not found.
+   - `find(value)` - find node with given value. Returns node reference or undefined.
+   - `contains(value)` - returns true if value exists in tree.
+   - `size()` - returns total number of nodes in tree.
+   - `height()` - returns height of tree (max depth).
+   - `isLeaf(value)` - returns true if node with given value is a leaf.
+   - `siblings(value)` - returns array of sibling values for given node value.
+   - `children(value)` - returns array of child values for given node value.
+   - `parent(value)` - returns parent value for given node value, or null if root.
+   - `breadthFirstTraversal()` - returns array of values in breadth-first order.
+   - `depthFirstTraversal()` - returns array of values in depth-first (pre-order) order.
+   - `toArray()` - returns array of all values in depth-first order.
+   - `clear()` - remove all nodes.
+   - `clone()` - create deep copy of the tree.
 
-3) Implement using separate chaining with linked lists for collision resolution. Handle hash function for different key types (string, number, object).
+3) Each node should have: value, children array, reference to parent.
 
-4) Write tests in `tests/hashTable.test.js` covering: all operations (set, get, has, delete, clear), collision handling, resizing behavior, different key types, iteration methods, performance with large datasets, and edge cases.
+4) Write tests in `tests/tree.test.js` covering: all operations (add, remove, find, contains), tree traversal methods, edge cases (empty tree, single node, removing root), tree properties (height, size, leaf detection), cloning functionality, and complex tree structures.
 
-5) Export `createHashTable` from `src/index.js` as `hashTable`.
+5) Export `createTree` from `src/index.js` as `tree`.
 
-6) Bonus: Add load factor management and automatic resizing when load factor exceeds threshold.
+6) Bonus: Add support for tree traversal with callbacks (pre-order, post-order, in-order for binary subtrees), path finding between nodes, and subtree extraction.

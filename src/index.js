@@ -109,6 +109,9 @@ const { createStack } = require('./stack');
 // Data Queue
 const { createQueue: createDataQueue } = require('./dataQueue');
 
+// Hash Table
+const { createHashTable } = require('./hashTable');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -218,4 +221,7 @@ module.exports = {
 
   // Data Queue
   dataQueue: { createQueue: createDataQueue },
+
+  // Hash Table
+  hashTable: { createHashTable },
 };

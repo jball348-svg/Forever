@@ -57,14 +57,33 @@ function createHashTable(initialSize = 16) {
   }
 
   function findNode(bucketIndex, key) {
-    let current = buckets[bucketIndex];
+    let current = buckets[bucketIndex] || null;
     while (current !== null) {
-      if (current.key === key) {
+      if (keysEqual(current.key, key)) {
         return current;
       }
       current = current.next;
     }
     return null;
+  }
+
+  function keysEqual(key1, key2) {
+    // Handle primitive types with strict equality
+    if (key1 === key2) {
+      return true;
+    }
+    
+    // Handle objects and arrays with deep comparison
+    if (typeof key1 === 'object' && typeof key2 === 'object' && 
+        key1 !== null && key2 !== null) {
+      try {
+        return JSON.stringify(key1) === JSON.stringify(key2);
+      } catch {
+        return false;
+      }
+    }
+    
+    return false;
   }
 
   function set(key, value) {
@@ -78,7 +97,7 @@ function createHashTable(initialSize = 16) {
     } else {
       // Add new key
       const newNode = createNode(key, value);
-      newNode.next = buckets[bucketIndex];
+      newNode.next = buckets[bucketIndex] || null;
       buckets[bucketIndex] = newNode;
       count++;
 
@@ -104,11 +123,11 @@ function createHashTable(initialSize = 16) {
 
   function deleteKey(key) {
     const bucketIndex = getBucketIndex(key);
-    let current = buckets[bucketIndex];
+    let current = buckets[bucketIndex] || null;
     let prev = null;
 
     while (current !== null) {
-      if (current.key === key) {
+      if (keysEqual(current.key, key)) {
         if (prev === null) {
           // Node is at the head of the list
           buckets[bucketIndex] = current.next;
@@ -133,7 +152,7 @@ function createHashTable(initialSize = 16) {
   function keys() {
     const result = [];
     for (let i = 0; i < buckets.length; i++) {
-      let current = buckets[i];
+      let current = buckets[i] || null;
       while (current !== null) {
         result.push(current.key);
         current = current.next;
@@ -145,7 +164,7 @@ function createHashTable(initialSize = 16) {
   function values() {
     const result = [];
     for (let i = 0; i < buckets.length; i++) {
-      let current = buckets[i];
+      let current = buckets[i] || null;
       while (current !== null) {
         result.push(current.value);
         current = current.next;
@@ -157,7 +176,7 @@ function createHashTable(initialSize = 16) {
   function entries() {
     const result = [];
     for (let i = 0; i < buckets.length; i++) {
-      let current = buckets[i];
+      let current = buckets[i] || null;
       while (current !== null) {
         result.push([current.key, current.value]);
         current = current.next;
@@ -172,7 +191,7 @@ function createHashTable(initialSize = 16) {
     }
 
     for (let i = 0; i < buckets.length; i++) {
-      let current = buckets[i];
+      let current = buckets[i] || null;
       while (current !== null) {
         callback(current.value, current.key, { get, set, has, delete: deleteKey, clear });
         current = current.next;
@@ -194,7 +213,7 @@ function createHashTable(initialSize = 16) {
 
     // Rehash all existing entries
     for (let i = 0; i < oldBuckets.length; i++) {
-      let current = oldBuckets[i];
+      let current = oldBuckets[i] || null;
       while (current !== null) {
         set(current.key, current.value);
         current = current.next;
