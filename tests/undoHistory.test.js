@@ -6,9 +6,9 @@ const { createUndoHistory } = require('../src/undoHistory');
 let passed = 0;
 let failed = 0;
 
-async function test(name, fn) {
+function test(name, fn) {
   try {
-    await fn();
+    fn();
     console.log(`  ✔ ${name}`);
     passed++;
   } catch (err) {
@@ -22,19 +22,19 @@ console.log('=======================');
 
 console.log('\n[push / current / getHistory]');
 
-await test('current() returns undefined when empty', () => {
+test('current() returns undefined when empty', () => {
   const h = createUndoHistory();
   assert.strictEqual(h.current(), undefined);
 });
 
-await test('current() returns the last pushed state', () => {
+test('current() returns the last pushed state', () => {
   const h = createUndoHistory();
   h.push({ x: 1 });
   h.push({ x: 2 });
   assert.deepStrictEqual(h.current(), { x: 2 });
 });
 
-await test('getHistory() returns all pushed states oldest-first', () => {
+test('getHistory() returns all pushed states oldest-first', () => {
   const h = createUndoHistory();
   h.push(1);
   h.push(2);
@@ -42,7 +42,7 @@ await test('getHistory() returns all pushed states oldest-first', () => {
   assert.deepStrictEqual(h.getHistory(), [1, 2, 3]);
 });
 
-await test('getHistory() returns a copy - mutations do not affect internals', () => {
+test('getHistory() returns a copy - mutations do not affect internals', () => {
   const h = createUndoHistory();
   h.push('a');
   const hist = h.getHistory();
@@ -52,31 +52,31 @@ await test('getHistory() returns a copy - mutations do not affect internals', ()
 
 console.log('\n[canUndo / canRedo]');
 
-await test('canUndo() is false when empty', () => {
+test('canUndo() is false when empty', () => {
   assert.strictEqual(createUndoHistory().canUndo(), false);
 });
 
-await test('canUndo() is false with only one state', () => {
+test('canUndo() is false with only one state', () => {
   const h = createUndoHistory();
   h.push(1);
   assert.strictEqual(h.canUndo(), false);
 });
 
-await test('canUndo() is true with two or more states', () => {
+test('canUndo() is true with two or more states', () => {
   const h = createUndoHistory();
   h.push(1);
   h.push(2);
   assert.strictEqual(h.canUndo(), true);
 });
 
-await test('canRedo() is false initially', () => {
+test('canRedo() is false initially', () => {
   const h = createUndoHistory();
   h.push(1);
   h.push(2);
   assert.strictEqual(h.canRedo(), false);
 });
 
-await test('canRedo() is true after an undo', () => {
+test('canRedo() is true after an undo', () => {
   const h = createUndoHistory();
   h.push(1);
   h.push(2);
@@ -86,7 +86,7 @@ await test('canRedo() is true after an undo', () => {
 
 console.log('\n[undo / redo basic flow]');
 
-await test('undo returns the previous state', () => {
+test('undo returns the previous state', () => {
   const h = createUndoHistory();
   h.push('a');
   h.push('b');
@@ -94,14 +94,14 @@ await test('undo returns the previous state', () => {
   assert.strictEqual(h.current(), 'a');
 });
 
-await test('undo returns undefined when nothing to undo', () => {
+test('undo returns undefined when nothing to undo', () => {
   const h = createUndoHistory();
   assert.strictEqual(h.undo(), undefined);
   h.push(1);
   assert.strictEqual(h.undo(), undefined);
 });
 
-await test('redo returns the next state after undo', () => {
+test('redo returns the next state after undo', () => {
   const h = createUndoHistory();
   h.push(10);
   h.push(20);
@@ -110,13 +110,13 @@ await test('redo returns the next state after undo', () => {
   assert.strictEqual(h.current(), 20);
 });
 
-await test('redo returns undefined when nothing to redo', () => {
+test('redo returns undefined when nothing to redo', () => {
   const h = createUndoHistory();
   h.push(1);
   assert.strictEqual(h.redo(), undefined);
 });
 
-await test('multiple undo/redo steps work correctly', () => {
+test('multiple undo/redo steps work correctly', () => {
   const h = createUndoHistory();
   h.push(1);
   h.push(2);
@@ -130,7 +130,7 @@ await test('multiple undo/redo steps work correctly', () => {
 
 console.log('\n[redo stack cleared on new push]');
 
-await test('pushing after undo clears redo history', () => {
+test('pushing after undo clears redo history', () => {
   const h = createUndoHistory();
   h.push('a');
   h.push('b');
@@ -143,7 +143,7 @@ await test('pushing after undo clears redo history', () => {
 
 console.log('\n[limit enforcement]');
 
-await test('drops oldest entry when limit is exceeded', () => {
+test('drops oldest entry when limit is exceeded', () => {
   const h = createUndoHistory({ limit: 3 });
   h.push(1);
   h.push(2);
@@ -152,7 +152,7 @@ await test('drops oldest entry when limit is exceeded', () => {
   assert.deepStrictEqual(h.getHistory(), [2, 3, 4]);
 });
 
-await test('canUndo still works correctly after limit trim', () => {
+test('canUndo still works correctly after limit trim', () => {
   const h = createUndoHistory({ limit: 2 });
   h.push('x');
   h.push('y');
@@ -164,7 +164,7 @@ await test('canUndo still works correctly after limit trim', () => {
 
 console.log('\n[clear()]');
 
-await test('clears past and future', () => {
+test('clears past and future', () => {
   const h = createUndoHistory();
   h.push(1);
   h.push(2);
@@ -178,7 +178,7 @@ await test('clears past and future', () => {
 
 console.log('\n[callbacks]');
 
-await test('onUndo is called with the state after undo', () => {
+test('onUndo is called with the state after undo', () => {
   const calls = [];
   const h = createUndoHistory({ onUndo: (state) => calls.push(state) });
   h.push('first');
@@ -188,7 +188,7 @@ await test('onUndo is called with the state after undo', () => {
   assert.strictEqual(calls[0], 'first');
 });
 
-await test('onRedo is called with the state after redo', () => {
+test('onRedo is called with the state after redo', () => {
   const calls = [];
   const h = createUndoHistory({ onRedo: (state) => calls.push(state) });
   h.push('first');
@@ -199,7 +199,7 @@ await test('onRedo is called with the state after redo', () => {
   assert.strictEqual(calls[0], 'second');
 });
 
-await test('onUndo is not called when nothing to undo', () => {
+test('onUndo is not called when nothing to undo', () => {
   const calls = [];
   const h = createUndoHistory({ onUndo: () => calls.push(1) });
   h.push('only');
@@ -209,4 +209,4 @@ await test('onUndo is not called when nothing to undo', () => {
 
 console.log(`\n${'='.repeat(30)}`);
 console.log(`Results: ${passed} passed, ${failed} failed`);
-if (failed > 0) process.exit(1);
+if (failed > 0) { process.exit(1); }
