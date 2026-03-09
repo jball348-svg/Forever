@@ -85,6 +85,9 @@ const { createTaskRunner } = require('./taskRunner');
 // Serializer / deep-object utils
 const serializer = require('./serializer');
 
+// Feature flags
+const { createFlagStore } = require('./featureFlags');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -170,4 +173,7 @@ module.exports = {
 
   // Serializer and deep-object utilities
   serializer,
+
+  // Feature flags / toggles with rollout support
+  featureFlags: { createFlagStore },
 };
