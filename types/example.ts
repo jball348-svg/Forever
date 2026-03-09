@@ -40,7 +40,7 @@ import {
 
   // Greet
   greet,
-} from 'forever';
+} from '../src/index';
 
 // ─── Cache ────────────────────────────────────────────────────────────────────────
 cache.set('user:1', { name: 'Alice', age: 30 });
@@ -69,7 +69,7 @@ const sq: number = square(9); // 81 (cached on repeat calls)
 const pipe = pipeline(
   (x: number) => x * 2,
   (x: number) => x + 1,
-  (x: number) => String(x)
+  (x: number) => x.toString()
 );
 const piped: any = pipe(5); // '11'
 

@@ -20,7 +20,9 @@ function createTree(value) {
     
     for (const child of startNode.children) {
       const found = findNode(targetValue, child);
-      if (found) return found;
+      if (found) {
+        return found;
+      }
     }
     
     return undefined;
@@ -64,21 +66,6 @@ function createTree(value) {
       for (const child of node.children) {
         traverse(child);
       }
-    }
-    
-    traverse(startNode);
-    return result;
-  }
-
-  // Helper function for post-order traversal
-  function postOrderTraversal(startNode = root) {
-    const result = [];
-    
-    function traverse(node) {
-      for (const child of node.children) {
-        traverse(child);
-      }
-      result.push(node.value);
     }
     
     traverse(startNode);
@@ -132,34 +119,6 @@ function createTree(value) {
     return path;
   }
 
-  // Helper function to extract subtree
-  function extractSubtree(nodeValue) {
-    const node = findNode(nodeValue);
-    if (!node) {
-      return null;
-    }
-    
-    // Create a deep copy of the subtree
-    function copyNode(originalNode, parent = null) {
-      const copy = {
-        value: originalNode.value,
-        children: [],
-        parent
-      };
-      
-      for (const child of originalNode.children) {
-        copy.children.push(copyNode(child, copy));
-      }
-      
-      return copy;
-    }
-    
-    const copiedRoot = copyNode(node);
-    
-    // Create tree factory function with the copied root
-    return createTreeFromRoot(copiedRoot);
-  }
-
   // Helper to create tree from existing root
   function createTreeFromRoot(existingRoot) {
     // Count nodes in the new root
@@ -173,154 +132,6 @@ function createTree(value) {
     
     const newRoot = existingRoot;
     const newNodeCount = countNodes(newRoot);
-    
-    // Helper function to find node by value
-    function findNode(targetValue, startNode = newRoot) {
-      if (startNode.value === targetValue) {
-        return startNode;
-      }
-      
-      for (const child of startNode.children) {
-        const found = findNode(targetValue, child);
-        if (found) return found;
-      }
-      
-      return undefined;
-    }
-
-    // Helper function to calculate height from a node
-    function calculateHeight(node) {
-      if (node.children.length === 0) {
-        return 0;
-      }
-      
-      let maxChildHeight = 0;
-      for (const child of node.children) {
-        const childHeight = calculateHeight(child);
-        maxChildHeight = Math.max(maxChildHeight, childHeight);
-      }
-      
-      return maxChildHeight + 1;
-    }
-
-    // Helper function for breadth-first traversal
-    function breadthFirstTraversal(startNode = newRoot) {
-      const result = [];
-      const queue = [startNode];
-      
-      while (queue.length > 0) {
-        const node = queue.shift();
-        result.push(node.value);
-        queue.push(...node.children);
-      }
-      
-      return result;
-    }
-
-    // Helper function for depth-first traversal (pre-order)
-    function depthFirstTraversal(startNode = newRoot) {
-      const result = [];
-      
-      function traverse(node) {
-        result.push(node.value);
-        for (const child of node.children) {
-          traverse(child);
-        }
-      }
-      
-      traverse(startNode);
-      return result;
-    }
-
-    // Helper function for post-order traversal
-    function postOrderTraversal(startNode = newRoot) {
-      const result = [];
-      
-      function traverse(node) {
-        for (const child of node.children) {
-          traverse(child);
-        }
-        result.push(node.value);
-      }
-      
-      traverse(startNode);
-      return result;
-    }
-
-    // Helper function to find path between nodes
-    function findPath(fromValue, toValue) {
-      const fromNode = findNode(fromValue);
-      const toNode = findNode(toValue);
-      
-      if (!fromNode || !toNode) {
-        return null;
-      }
-      
-      // Build path from root to fromNode
-      const fromPath = [];
-      let current = fromNode;
-      while (current) {
-        fromPath.unshift(current.value);
-        current = current.parent;
-      }
-      
-      // Build path from root to toNode
-      const toPath = [];
-      current = toNode;
-      while (current) {
-        toPath.unshift(current.value);
-        current = current.parent;
-      }
-      
-      // Find common ancestor
-      let commonIndex = 0;
-      while (commonIndex < fromPath.length && 
-             commonIndex < toPath.length && 
-             fromPath[commonIndex] === toPath[commonIndex]) {
-        commonIndex++;
-      }
-      
-      // Build path: fromNode up to common ancestor, then down to toNode
-      const path = [];
-      // Add fromNode up to (but not including) common ancestor
-      for (let i = fromPath.length - 1; i >= commonIndex; i--) {
-        path.push(fromPath[i]);
-      }
-      // Add common ancestor to toNode path
-      for (let i = commonIndex - 1; i < toPath.length; i++) {
-        path.push(toPath[i]);
-      }
-      
-      return path;
-    }
-
-    // Helper function to extract subtree
-    function extractSubtree(nodeValue) {
-      const node = findNode(nodeValue);
-      if (!node) {
-        return null;
-      }
-      
-      // Create a deep copy of the subtree
-      function copyNode(originalNode, parent = null) {
-        const copy = {
-          value: originalNode.value,
-          children: [],
-          parent
-        };
-        
-        for (const child of originalNode.children) {
-          copy.children.push(copyNode(child, copy));
-        }
-        
-        return copy;
-      }
-      
-      const copiedRoot = copyNode(node);
-      
-      // Create tree factory function with the copied root
-      return createTreeFromRoot(copiedRoot);
-    }
 
     // Return the tree object with the new root
     return {
@@ -329,7 +140,7 @@ function createTree(value) {
       },
 
       add(parentValue, childValue) {
-        const parent = findNode(parentValue);
+        const parent = findNode(parentValue, newRoot);
         if (!parent) {
           return false;
         }
@@ -346,7 +157,7 @@ function createTree(value) {
       },
 
       remove(value) {
-        const node = findNode(value);
+        const node = findNode(value, newRoot);
         if (!node) {
           return false;
         }
@@ -381,11 +192,11 @@ function createTree(value) {
       },
 
       find(value) {
-        return findNode(value);
+        return findNode(value, newRoot);
       },
 
       contains(value) {
-        return findNode(value) !== undefined;
+        return findNode(value, newRoot) !== undefined;
       },
 
       size() {
@@ -397,12 +208,12 @@ function createTree(value) {
       },
 
       isLeaf(value) {
-        const node = findNode(value);
+        const node = findNode(value, newRoot);
         return node ? node.children.length === 0 : false;
       },
 
       siblings(value) {
-        const node = findNode(value);
+        const node = findNode(value, newRoot);
         if (!node || !node.parent) {
           return [];
         }
@@ -413,12 +224,12 @@ function createTree(value) {
       },
 
       children(value) {
-        const node = findNode(value);
+        const node = findNode(value, newRoot);
         return node ? node.children.map(child => child.value) : [];
       },
 
       parent(value) {
-        const node = findNode(value);
+        const node = findNode(value, newRoot);
         return node && node.parent ? node.parent.value : null;
       },
 
@@ -508,7 +319,30 @@ function createTree(value) {
 
       // Bonus subtree extraction
       extractSubtree(nodeValue) {
-        return extractSubtree(nodeValue);
+        const node = findNode(nodeValue, newRoot);
+        if (!node) {
+          return null;
+        }
+        
+        // Create a deep copy of the subtree
+        function copyNode(originalNode, parent = null) {
+          const copy = {
+            value: originalNode.value,
+            children: [],
+            parent
+          };
+          
+          for (const child of originalNode.children) {
+            copy.children.push(copyNode(child, copy));
+          }
+          
+          return copy;
+        }
+        
+        const copiedRoot = copyNode(node);
+        
+        // Create a completely new tree with the copied subtree
+        return createTreeFromRoot(copiedRoot);
       }
     };
   }

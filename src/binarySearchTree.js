@@ -57,6 +57,9 @@ function createBinarySearchTree(comparator) {
         current = current.right;
       }
     }
+    
+    // This should never be reached, but added for completeness
+    return false;
   }
 
   function search(value) {

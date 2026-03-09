@@ -166,7 +166,7 @@ function createTaskRunner(options = {}) {
           }
           resolve(Object.fromEntries(results));
         }
-        // Explicit return for async function
+        // Continue polling
         return;
       }, 0);
 
