@@ -94,6 +94,9 @@ const { createUndoHistory } = require('./undoHistory');
 // Async semaphore
 const { createSemaphore } = require('./semaphore');
 
+// Trie data structure
+const { createTrie } = require('./trie');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -188,4 +191,7 @@ module.exports = {
 
   // Async semaphore / concurrency limiter
   semaphore: { createSemaphore },
+
+  // Trie data structure
+  trie: { createTrie },
 };
