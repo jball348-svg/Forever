@@ -91,6 +91,9 @@ const { createFlagStore } = require('./featureFlags');
 // Undo/redo history
 const { createUndoHistory } = require('./undoHistory');
 
+// Async semaphore
+const { createSemaphore } = require('./semaphore');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -182,4 +185,7 @@ module.exports = {
 
   // Undo/redo history manager
   undoHistory: { createUndoHistory },
+
+  // Async semaphore / concurrency limiter
+  semaphore: { createSemaphore },
 };
