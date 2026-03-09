@@ -58,11 +58,13 @@ function createSemaphore(concurrency) {
      */
     async run(fn) {
       await this.acquire();
+      let result;
       try {
-        return await fn();
+        result = await fn();
       } finally {
         this.release();
       }
+      return result;
     },
 
     /**

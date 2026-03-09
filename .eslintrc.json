@@ -35,5 +35,13 @@
     "node_modules/",
     "benchmarks/reports/",
     "types/"
+  ],
+  "overrides": [
+    {
+      "files": ["tests/**/*.js"],
+      "env": {
+        "jest": true
+      }
+    }
   ]
 }
