@@ -1,24 +1,24 @@
-Add an undo/redo history module. Create `src/undoHistory.js` with the following:
+Add a `src/semaphore.js` async concurrency-limiting module with the following:
 
-1) `createUndoHistory(options?)` - factory function. Options:
-   - `limit` (number, default 50) - maximum number of undo steps to retain
-   - `onUndo(state)` - optional callback fired after an undo
-   - `onRedo(state)` - optional callback fired after a redo
+1) `createSemaphore(concurrency)` - factory function.
+   - `concurrency` (number, required) - maximum number of concurrent operations allowed.
+   - Throws if concurrency < 1.
 
 2) Returns an object with:
-   - `push(state)` - record a new state snapshot onto the history stack. Clears any forward (redo) history.
-   - `undo()` - move one step back; returns the previous state, or undefined if nothing to undo.
-   - `redo()` - move one step forward; returns the next state, or undefined if nothing to redo.
-   - `canUndo()` - returns true if there is at least one state to undo to.
-   - `canRedo()` - returns true if there is at least one state to redo to.
-   - `current()` - returns the current state (top of the undo stack), or undefined if empty.
-   - `clear()` - wipe all history.
-   - `getHistory()` - returns a shallow copy of the internal past-states array (oldest first).
+   - `acquire()` - returns a Promise that resolves when a slot is available. Callers MUST call `release()` when done.
+   - `release()` - releases one slot, allowing the next waiting caller to proceed.
+   - `run(fn)` - convenience wrapper: acquires a slot, calls `fn()`, releases on completion (or error). Returns a Promise that resolves/rejects with fn's result.
+   - `available` (getter) - number of currently free slots.
+   - `waiting` (getter) - number of callers currently queued waiting for a slot.
 
-3) The `limit` option caps how many past states are retained; when the limit is exceeded the oldest entry is dropped.
+3) Implement using a simple internal counter + a queue of resolve callbacks (no external deps).
 
-4) States can be any value (objects, primitives, arrays). Stored by reference - callers are responsible for cloning if needed.
+4) Write tests in `tests/semaphore.test.js` covering:
+   - Allows up to `concurrency` simultaneous operations.
+   - Queues excess operations until a slot is released.
+   - `available` and `waiting` counts are correct before/during/after.
+   - `run()` resolves with the fn return value.
+   - `run()` releases the slot even if fn throws.
+   - Works with concurrency = 1 (mutex behaviour).
 
-5) Write tests in `tests/undoHistory.test.js` covering: push/undo/redo basic flow, canUndo/canRedo flags, limit enforcement (oldest entry dropped), clear(), onUndo/onRedo callbacks, redo stack cleared on new push, current() before and after operations, and unknown/empty cases returning undefined.
-
-6) Export `createUndoHistory` from `src/index.js` as `undoHistory`.
+5) Export `createSemaphore` from `src/index.js` as `semaphore`.
