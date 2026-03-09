@@ -1,21 +1,24 @@
-Add a feature flags / toggles module. Create `src/featureFlags.js` with the following:
+Add an undo/redo history module. Create `src/undoHistory.js` with the following:
 
-1) `createFlagStore(options?)` - factory function. Options:
-   - `flags` (object, default {}) - initial flag definitions: each key is a flag name, each value is a flag config: `{ enabled: bool, rolloutPercentage?: number (0-100), description?: string, metadata?: object }`
-   - `onChange(flagName, newValue, oldValue)` - optional callback when a flag changes
+1) `createUndoHistory(options?)` - factory function. Options:
+   - `limit` (number, default 50) - maximum number of undo steps to retain
+   - `onUndo(state)` - optional callback fired after an undo
+   - `onRedo(state)` - optional callback fired after a redo
 
 2) Returns an object with:
-   - `isEnabled(flagName, context?)` - returns true if the flag is enabled. If `rolloutPercentage` is set, uses a stable hash of `context.userId` (or a random id) to deterministically place the user into or out of the rollout. Returns false for unknown flags.
-   - `enable(flagName)` - enable a flag
-   - `disable(flagName)` - disable a flag
-   - `setRollout(flagName, percentage)` - set the rollout percentage (0-100)
-   - `define(flagName, config)` - define a new flag or update an existing one
-   - `getFlag(flagName)` - returns the full flag config or undefined
-   - `getAllFlags()` - returns all flag configs
-   - `reset()` - restore all flags to their initial values
+   - `push(state)` - record a new state snapshot onto the history stack. Clears any forward (redo) history.
+   - `undo()` - move one step back; returns the previous state, or undefined if nothing to undo.
+   - `redo()` - move one step forward; returns the next state, or undefined if nothing to redo.
+   - `canUndo()` - returns true if there is at least one state to undo to.
+   - `canRedo()` - returns true if there is at least one state to redo to.
+   - `current()` - returns the current state (top of the undo stack), or undefined if empty.
+   - `clear()` - wipe all history.
+   - `getHistory()` - returns a shallow copy of the internal past-states array (oldest first).
 
-3) Rollout hashing: use a simple deterministic hash (e.g. djb2 or FNV) of `String(userId)` to get a stable 0-99 bucket; if the bucket < rolloutPercentage the flag is enabled for that user.
+3) The `limit` option caps how many past states are retained; when the limit is exceeded the oldest entry is dropped.
 
-4) Write tests in `tests/featureFlags.test.js` covering: basic enable/disable, rollout percentage (same userId always gets same result, 100% enables for all, 0% disables for all), onChange callback, define/getFlag/getAllFlags, reset, and unknown flag returns false.
+4) States can be any value (objects, primitives, arrays). Stored by reference - callers are responsible for cloning if needed.
 
-5) Export `createFlagStore` from `src/index.js` as `featureFlags`.
+5) Write tests in `tests/undoHistory.test.js` covering: push/undo/redo basic flow, canUndo/canRedo flags, limit enforcement (oldest entry dropped), clear(), onUndo/onRedo callbacks, redo stack cleared on new push, current() before and after operations, and unknown/empty cases returning undefined.
+
+6) Export `createUndoHistory` from `src/index.js` as `undoHistory`.
