@@ -268,11 +268,11 @@
     {
       "type": "docs",
       "date": "2026-03-09",
-      "description": "Documentation regenerated. Coverage: 79%",
+      "description": "Documentation regenerated. Coverage: 80%",
       "coverage": {
-        "total": 121,
-        "documented": 96,
-        "percent": 79
+        "total": 122,
+        "documented": 97,
+        "percent": 80
       }
     }
   ]

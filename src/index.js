@@ -97,6 +97,9 @@ const { createSemaphore } = require('./semaphore');
 // Trie data structure
 const { createTrie } = require('./trie');
 
+// Binary Search Tree
+const { createBinarySearchTree } = require('./binarySearchTree');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -194,4 +197,7 @@ module.exports = {
 
   // Trie data structure
   trie: { createTrie },
+
+  // Binary Search Tree
+  binarySearchTree: { createBinarySearchTree },
 };

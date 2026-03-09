@@ -1,19 +1,24 @@
-Add a `src/trie.js` prefix-tree (trie) data structure module with the following:
+Add a `src/binarySearchTree.js` Binary Search Tree (BST) data structure module with the following:
 
-1) `createTrie()` - factory function with no arguments.
+1) `createBinarySearchTree(comparator?)` - factory function with optional comparator function (defaults to numeric comparison).
 
 2) Returns an object with:
-   - `insert(word)` - insert a string into the trie.
-   - `search(word)` - returns true if the exact word exists in the trie.
-   - `startsWith(prefix)` - returns true if any inserted word starts with prefix.
-   - `delete(word)` - removes a word from the trie. Returns true if removed, false if not found.
-   - `autocomplete(prefix, limit?)` - returns an array of all words in the trie that start with prefix. Optional `limit` caps results (default: no limit). Returns empty array if no matches.
-   - `size` (getter) - total number of words currently stored.
-   - `clear()` - removes all words.
-   - `toArray()` - returns all stored words as a sorted array.
+   - `insert(value)` - insert a value into the BST. Returns true if inserted, false if duplicate.
+   - `search(value)` - returns true if the value exists in the BST.
+   - `delete(value)` - removes a value from the BST. Returns true if removed, false if not found.
+   - `findMin()` - returns the minimum value in the tree, or null if empty.
+   - `findMax()` - returns the maximum value in the tree, or null if empty.
+   - `inOrderTraversal()` - returns an array of values in ascending order.
+   - `preOrderTraversal()` - returns an array of values in pre-order.
+   - `postOrderTraversal()` - returns an array of values in post-order.
+   - `height` (getter) - height of the tree (0 for empty, 1 for single node).
+   - `size` (getter) - total number of nodes.
+   - `isBalanced()` - returns true if the tree is height-balanced.
+   - `clear()` - removes all nodes.
+   - `toArray()` - alias for inOrderTraversal.
 
-3) Implement using a plain node object (children map + isEnd flag). No external deps.
+3) Implement using a node object with value, left, right properties. No external deps.
 
-4) Write tests in `tests/trie.test.js` covering: insert + search (hit and miss), startsWith (hit and miss), delete (existing, non-existing, prefix-shared words), autocomplete with and without limit, size getter before/after insert/delete/clear, toArray sorted output, clear(), and edge cases (empty string, single char, duplicate inserts).
+4) Write tests in `tests/binarySearchTree.test.js` covering: insert + search (hit and miss), delete (leaf, one child, two children, root, non-existing), findMin/findMax (empty tree, single node, multiple nodes), all three traversal methods, height calculation (empty, single, balanced, unbalanced), size tracking, isBalanced detection, clear functionality, custom comparator (strings, objects), and edge cases (duplicate inserts, large datasets).
 
-5) Export `createTrie` from `src/index.js` as `trie`.
+5) Export `createBinarySearchTree` from `src/index.js` as `binarySearchTree`.
