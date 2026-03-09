@@ -1,24 +1,25 @@
-Add a `src/stack.js` Stack data structure module with the following:
+Add a `src/queue.js` Queue data structure module with the following:
 
-1) `createStack()` - factory function with no arguments.
+1) `createQueue()` - factory function with no arguments.
 
 2) Returns an object with:
-   - `push(item)` - add item to top of stack.
-   - `pop()` - remove and return top item. Returns null if stack is empty.
-   - `peek()` - return top item without removing it. Returns null if empty.
-   - `isEmpty()` - returns true if stack is empty.
-   - `size` (getter) - number of items in stack.
+   - `enqueue(item)` - add item to end of queue.
+   - `dequeue()` - remove and return item from front of queue. Returns null if queue is empty.
+   - `front()` - return item at front without removing it. Returns null if empty.
+   - `rear()` - return item at end without removing it. Returns null if empty.
+   - `isEmpty()` - returns true if queue is empty.
+   - `size` (getter) - number of items in queue.
    - `clear()` - remove all items.
-   - `toArray()` - convert stack to array (top to bottom order).
-   - `fromArray(array)` - replace stack contents with array values (first element becomes bottom).
-   - `contains(item)` - returns true if item exists in stack.
-   - `forEach(callback)` - iterate over items from top to bottom with callback(item, index).
-   - `map(callback)` - create new array with callback(item, index) from top to bottom.
+   - `toArray()` - convert queue to array (front to rear order).
+   - `fromArray(array)` - replace queue contents with array values.
+   - `contains(item)` - returns true if item exists in queue.
+   - `forEach(callback)` - iterate over items from front to rear with callback(item, index).
+   - `map(callback)` - create new array with callback(item, index) from front to rear.
 
-3) Implement using a dynamic array or linked list internally. Choose the most efficient approach.
+3) Implement using a circular buffer or linked list internally. Choose the most efficient approach for enqueue/dequeue operations.
 
-4) Write tests in `tests/stack.test.js` covering: all operations (push, pop, peek, isEmpty, size, clear), edge cases (empty stack operations), toArray/fromArray conversion, contains method, iteration methods, performance with large datasets, and error handling.
+4) Write tests in `tests/queue.test.js` covering: all operations (enqueue, dequeue, front, rear, isEmpty, size, clear), edge cases (empty queue operations), toArray/fromArray conversion, contains method, iteration methods, performance with large datasets, and error handling.
 
-5) Export `createStack` from `src/index.js` as `stack`.
+5) Export `createQueue` from `src/index.js` as `queue`.
 
-6) Bonus: Add a `clone()` method that creates a new stack with the same contents.
+6) Bonus: Add a `clone()` method that creates a new queue with the same contents.
