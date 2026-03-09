@@ -103,6 +103,9 @@ const { createBinarySearchTree } = require('./binarySearchTree');
 // Linked List
 const { createLinkedList } = require('./linkedList');
 
+// Stack
+const { createStack } = require('./stack');
+
 // Re-export everything under sensible namespaces
 module.exports = {
   // Cache and storage
@@ -206,4 +209,7 @@ module.exports = {
 
   // Linked List
   linkedList: { createLinkedList },
+
+  // Stack
+  stack: { createStack },
 };

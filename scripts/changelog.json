@@ -270,8 +270,8 @@
       "date": "2026-03-09",
       "description": "Documentation regenerated. Coverage: 80%",
       "coverage": {
-        "total": 123,
-        "documented": 98,
+        "total": 124,
+        "documented": 99,
         "percent": 80
       }
     }
